@@ -9,7 +9,7 @@ import Search from "@/page/Search";
 
 function AppRoutes() {
   return (
-    <Router>
+    <Router basename="/Threads">
       <Routes>
         <Route element={<DefaultLayout />}>
           <Route index element={<Home />} />
