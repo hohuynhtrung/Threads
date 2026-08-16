@@ -1,10 +1,16 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+
 import { loginSchema } from "@/schemas/authSchema";
 import InputField from "@/layouts/AdminLayout/components/InputField";
+import { useLogin } from "@/features/auth/hook";
+import { login } from "@/services/auth";
 
 function Login() {
+  const navigate = useNavigate();
+  const { login: doLogin, loggingIn, loginError } = useLogin();
+
   const {
     register,
     handleSubmit,
@@ -13,8 +19,14 @@ function Login() {
     resolver: yupResolver(loginSchema),
   });
 
-  const onSubmit = (data) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (data) => {
+    const result = await doLogin({
+      login: data.account,
+      password: data.password,
+    });
+    if (login.fulfilled.match(result)) {
+      navigate("/");
+    }
   };
 
   return (
@@ -40,11 +52,16 @@ function Login() {
           error={errors.password}
         />
 
+        {loginError && (
+          <p className="text-red-500 text-sm text-center">{loginError}</p>
+        )}
+
         <button
           type="submit"
-          className="w-full py-3.5 mt-1 bg-black text-white font-semibold text-sm rounded-2xl hover:bg-gray-800 active:scale-[0.99] transition-all cursor-pointer"
+          disabled={loggingIn}
+          className="w-full py-3.5 mt-1 bg-black text-white font-semibold text-sm rounded-2xl hover:bg-gray-800 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50"
         >
-          Log in
+          {loggingIn ? "Đang đăng nhập..." : "Log in"}
         </button>
       </form>
 

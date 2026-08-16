@@ -3,14 +3,15 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getPost = createAsyncThunk(
   "posts/getPost",
-  async (_, { rejectWithValue }) => {
+  async (
+    params = { type: "for_you", page: 1, per_page: 10 },
+    { rejectWithValue },
+  ) => {
     try {
-      const res = await http.get("/posts/feed");
-      return res;
+      const response = await http.get("/posts/feed", { params });
+      return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Không thể tải danh sách bài viết",
-      );
+      return rejectWithValue(error.response?.data?.message || "Lỗi hệ thống");
     }
   },
 );

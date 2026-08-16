@@ -6,6 +6,86 @@ export const httpClient = axios.create({
   baseURL,
 });
 
+// Automatically attach the access token to every request
+httpClient.interceptors.request.use((config) => {
+  const accessToken = localStorage.getItem("accessToken");
+  if (accessToken) {
+    config.headers.set("Authorization", `Bearer ${accessToken}`);
+  }
+  return config;
+});
+
+// Automatically refresh token on 401 error
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
+    }
+  });
+  failedQueue = [];
+};
+
+const refreshToken = async () => {
+  try {
+    const result = await axios.post(`${baseURL}/auth/refresh`, {
+      refresh_token: localStorage.getItem("refreshToken"),
+    });
+    localStorage.setItem("accessToken", result.data.access_token);
+    localStorage.setItem("refreshToken", result.data.refresh_token);
+    processQueue(null);
+  } catch (error) {
+    processQueue(error);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.href = "/login";
+    throw error;
+  }
+};
+
+const getNewToken = async () => {
+  if (!isRefreshing) {
+    isRefreshing = true;
+    try {
+      await refreshToken();
+    } finally {
+      isRefreshing = false;
+    }
+    return;
+  }
+
+  return new Promise((resolve, reject) => {
+    failedQueue.push({ resolve, reject });
+  });
+};
+
+httpClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    const shouldRenewToken =
+      error.response?.status === 401 && !originalRequest._retry;
+
+    if (shouldRenewToken) {
+      originalRequest._retry = true;
+
+      try {
+        await getNewToken();
+        return httpClient(originalRequest);
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  },
+);
+
+//API utility functions
 const _send = async (method, path, data, config) => {
   const response = await httpClient.request({
     ...config,

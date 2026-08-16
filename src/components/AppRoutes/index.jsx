@@ -6,8 +6,15 @@ import AdminLayout from "@/layouts/AdminLayout";
 import Login from "@/page/Auth/Login";
 import Register from "@/page/Auth/Register";
 import Search from "@/page/Search";
+import { useAuthFetching } from "@/features/auth/hook";
+import Loading from "@/components/Loading";
 
 function AppRoutes() {
+  const fetching = useAuthFetching();
+
+  if (fetching) {
+    return <Loading />;
+  }
   return (
     <Router>
       <Routes>

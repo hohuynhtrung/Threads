@@ -23,7 +23,7 @@ export const postSlice = createSlice({
       })
       .addCase(getPost.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload?.data || [];
+        state.list = action.payload || [];
       })
       .addCase(getPost.rejected, (state, action) => {
         state.loading = false;
