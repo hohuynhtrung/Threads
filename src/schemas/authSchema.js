@@ -15,7 +15,7 @@ export const registerSchema = yup.object().shape({
     .string()
     .min(6, "Mật khẩu ít nhất 6 ký tự")
     .required("Bắt buộc"),
-  confirmPassword: yup
+  password_confirmation: yup
     .string()
     .oneOf([yup.ref("password"), null], "Mật khẩu xác nhận không khớp")
     .required("Bắt buộc"),

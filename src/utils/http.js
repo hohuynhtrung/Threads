@@ -31,6 +31,11 @@ const processQueue = (error) => {
 };
 
 const refreshToken = async () => {
+  const refresh_token = localStorage.getItem("refreshToken");
+  if (!refresh_token) {
+    processQueue(new Error("No refresh token"));
+    throw new Error("No refresh token");
+  }
   try {
     const result = await axios.post(`${baseURL}/auth/refresh`, {
       refresh_token: localStorage.getItem("refreshToken"),
@@ -42,7 +47,6 @@ const refreshToken = async () => {
     processQueue(error);
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    window.location.href = "/login";
     throw error;
   }
 };
@@ -68,8 +72,15 @@ httpClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    const isAuthEndpoint =
+      originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/register") ||
+      originalRequest.url?.includes("/auth/refresh");
+
     const shouldRenewToken =
-      error.response?.status === 401 && !originalRequest._retry;
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthEndpoint;
 
     if (shouldRenewToken) {
       originalRequest._retry = true;

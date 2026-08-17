@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearLoginError, logout } from "@/features/auth/authSlice";
-import { getCurrentUser, login } from "@/services/auth";
+import { getCurrentUser, login, register } from "@/services/auth";
 
 export const useFetchCurrentUser = () => {
   const dispatch = useDispatch();
@@ -30,6 +30,16 @@ export const useLogin = () => {
   const resetError = () => dispatch(clearLoginError());
 
   return { login: handleLogin, loggingIn, loginError, resetError };
+};
+
+export const useRegister = () => {
+  const dispatch = useDispatch();
+  const registering = useSelector((state) => state.auth.registering);
+  const registerError = useSelector((state) => state.auth.registerError);
+
+  const handleRegister = (data) => dispatch(register(data));
+
+  return { register: handleRegister, registering, registerError };
 };
 
 export const useLogout = () => {

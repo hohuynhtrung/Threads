@@ -9,11 +9,12 @@ import { login } from "@/services/auth";
 
 function Login() {
   const navigate = useNavigate();
-  const { login: doLogin, loggingIn, loginError } = useLogin();
+  const { login: doLogin, loggingIn } = useLogin();
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(loginSchema),
@@ -26,19 +27,25 @@ function Login() {
     });
     if (login.fulfilled.match(result)) {
       navigate("/");
+      return;
     }
+    setError("account", { type: "server", message: "" });
+    setError("password", {
+      type: "server",
+      message: "Tài khoản hoặc mật khẩu không chính xác.",
+    });
   };
 
   return (
     <div className="w-full max-w-92.5 mx-auto">
       <h1 className="text-base font-bold text-center text-black mb-8">
-        Log in with your Instagram account
+        Đăng nhập bằng tài khoản Instagram
       </h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         <InputField
           name="account"
-          placeholder="Username, phone or email"
+          placeholder="Số điện thoại hoặc email"
           register={register}
           error={errors.account}
           autoFocus
@@ -47,21 +54,17 @@ function Login() {
         <InputField
           name="password"
           type="password"
-          placeholder="Password"
+          placeholder="Mật khẩu"
           register={register}
           error={errors.password}
         />
-
-        {loginError && (
-          <p className="text-red-500 text-sm text-center">{loginError}</p>
-        )}
 
         <button
           type="submit"
           disabled={loggingIn}
           className="w-full py-3.5 mt-1 bg-black text-white font-semibold text-sm rounded-2xl hover:bg-gray-800 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50"
         >
-          {loggingIn ? "Đang đăng nhập..." : "Log in"}
+          {loggingIn ? "Đang đăng nhập..." : "Đăng nhập"}
         </button>
       </form>
 
@@ -70,16 +73,16 @@ function Login() {
           href="#"
           className="text-sm text-gray-400 hover:text-gray-600 transition-colors mb-4"
         >
-          Forgot password?
+          Quên mật khẩu?
         </a>
 
         <span className="text-sm text-gray-500">
-          Don't have an account?{" "}
+          Bạn có tài khoản chưa?{" "}
           <Link
             to="/register"
             className="text-black text-sm font-semibold hover:underline ml-1"
           >
-            Register
+            Đăng ký
           </Link>
         </span>
       </div>

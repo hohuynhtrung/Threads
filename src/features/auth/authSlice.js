@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login, getCurrentUser } from "@/services/auth";
+import { login, getCurrentUser, register } from "@/services/auth";
 
 const initialState = {
   currentUser: null,
   fetching: true,
   loginError: null,
   loggingIn: false,
+  registerError: null,
+  registering: false,
 };
 
 export const authSlice = createSlice({
@@ -21,6 +23,7 @@ export const authSlice = createSlice({
     logout(state) {
       state.currentUser = null;
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     },
   },
 
@@ -30,13 +33,10 @@ export const authSlice = createSlice({
         state.fetching = true;
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
-        console.log("✅ getCurrentUser fulfilled:", action.payload);
-
         state.currentUser = action.payload;
         state.fetching = false;
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
-        console.log("❌ getCurrentUser rejected:", action.payload);
         state.currentUser = null;
         state.fetching = false;
       })
@@ -48,10 +48,27 @@ export const authSlice = createSlice({
         state.loggingIn = false;
         state.currentUser = action.payload.user;
         localStorage.setItem("accessToken", action.payload.access_token);
+        localStorage.setItem("refreshToken", action.payload.refresh_token);
       })
       .addCase(login.rejected, (state, action) => {
         state.loggingIn = false;
         state.loginError = action.payload;
+      })
+      .addCase(register.pending, (state) => {
+        state.registering = true;
+        state.registerError = null;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.registering = false;
+        state.currentUser = action.payload.user;
+        if (action.payload.access_token) {
+          localStorage.setItem("accessToken", action.payload.access_token);
+          localStorage.setItem("refreshToken", action.payload.refresh_token);
+        }
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.registering = false;
+        state.registerError = action.payload;
       });
   },
 });
