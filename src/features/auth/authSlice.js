@@ -47,8 +47,12 @@ export const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.loggingIn = false;
         state.currentUser = action.payload.user;
-        localStorage.setItem("accessToken", action.payload.access_token);
-        localStorage.setItem("refreshToken", action.payload.refresh_token);
+        if (action.payload.access_token) {
+          localStorage.setItem("accessToken", action.payload.access_token);
+        }
+        if (action.payload.refresh_token) {
+          localStorage.setItem("refreshToken", action.payload.refresh_token);
+        }
       })
       .addCase(login.rejected, (state, action) => {
         state.loggingIn = false;
@@ -63,6 +67,8 @@ export const authSlice = createSlice({
         state.currentUser = action.payload.user;
         if (action.payload.access_token) {
           localStorage.setItem("accessToken", action.payload.access_token);
+        }
+        if (action.payload.refresh_token) {
           localStorage.setItem("refreshToken", action.payload.refresh_token);
         }
       })

@@ -40,8 +40,8 @@ const refreshToken = async () => {
     const result = await axios.post(`${baseURL}/auth/refresh`, {
       refresh_token: localStorage.getItem("refreshToken"),
     });
-    localStorage.setItem("accessToken", result.data.access_token);
-    localStorage.setItem("refreshToken", result.data.refresh_token);
+    localStorage.setItem("accessToken", result.data.data.access_token);
+    localStorage.setItem("refreshToken", result.data.data.refresh_token);
     processQueue(null);
   } catch (error) {
     processQueue(error);
