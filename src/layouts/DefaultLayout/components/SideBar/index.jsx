@@ -104,7 +104,7 @@ function SideBar() {
         <img
           src={currentIcon}
           alt={item.label}
-          className={`h-5 w-5 object-contain transition-all duration-200 ${
+          className={`h-6 w-6 object-contain transition-all duration-200 ${
             isActive || isLoggedIn
               ? "opacity-100"
               : "opacity-40 group-hover:opacity-70"
@@ -147,12 +147,14 @@ function SideBar() {
         </Link>
       </div>
 
-      <nav className={`flex flex-col gap-1 ${isLoggedIn ? "w-full" : "w-fit"}`}>
+      <nav
+        className={`flex flex-col ${isLoggedIn ? "w-full gap-1" : "w-fit gap-7"}`}
+      >
         {navMainItems.map(renderNavItem)}
 
         {isLoggedIn && (
           <div className="flex flex-col mt-6 gap-1">
-            <div className="flex justify-between px-3 mb-1">
+            <div className="flex justify-between px-2 mb-1">
               <span className="text-xs text-gray-500 font-medium">Feeds</span>
               <span className="text-xs text-gray-500 font-medium cursor-pointer hover:underline">
                 Edit
