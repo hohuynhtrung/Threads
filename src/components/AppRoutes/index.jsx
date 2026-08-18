@@ -8,6 +8,7 @@ import Register from "@/page/Auth/Register";
 import Search from "@/page/Search";
 import { useAuthFetching } from "@/features/auth/hook";
 import Loading from "@/components/Loading";
+import GuestRoute from "@/components/GuestRoute";
 
 function AppRoutes() {
   const fetching = useAuthFetching();
@@ -23,8 +24,22 @@ function AppRoutes() {
           <Route path="search" element={<Search />} />
         </Route>
         <Route element={<AdminLayout />}>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
+          <Route
+            path="login"
+            element={
+              <GuestRoute>
+                <Login />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="register"
+            element={
+              <GuestRoute>
+                <Register />
+              </GuestRoute>
+            }
+          />
         </Route>
       </Routes>
     </Router>

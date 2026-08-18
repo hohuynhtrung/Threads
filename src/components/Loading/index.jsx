@@ -3,7 +3,7 @@ import Icons from "@/assets/icons";
 
 function Loading() {
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-white">
+    <div className="h-screen w-full flex items-center justify-center bg-white dark:bg-zinc-900">
       <motion.img
         src={Icons.iconThread}
         alt="Loading"

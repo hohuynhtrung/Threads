@@ -9,19 +9,19 @@ function DefaultLayout() {
   const currentUser = useCurrentUser();
 
   return (
-    <div className="min-h-screen w-full bg-[#fafafa] flex justify-center">
-      <aside className="fixed left-0 top-0 h-screen z-30 flex flex-col justify-between  bg-white border-r border-gray-100 sm:bg-transparent sm:border-none">
+    <div className="min-h-screen w-full bg-[#fafafa] dark:bg-[#101010] flex justify-center">
+      <aside className="fixed left-0 top-0 h-screen z-30 flex flex-col justify-between  bg-white dark:bg-[#101010] border-r border-gray-100 dark:border-zinc-800 sm:bg-transparent sm:border-none sm:dark:bg-transparent">
         <SideBar />
       </aside>
       <div className="flex justify-center w-full max-w-307.5">
         <main
           className={`${currentUser ? "ml-0" : "ml-20"} flex-1 min-h-screen max-w-160 w-full flex flex-col`}
         >
-          <div className="bg-[#fafafa] border-none">
+          <div className="bg-[#fafafa] dark:bg-[#101010] border-none">
             <HeaderDefault />
           </div>
 
-          <div className="flex-1 bg-white border-[#00000026] border rounded-3xl">
+          <div className="flex-1 bg-white dark:bg-[#101010] border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
             <Outlet />
           </div>
         </main>

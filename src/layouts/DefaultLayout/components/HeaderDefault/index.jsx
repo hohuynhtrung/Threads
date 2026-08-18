@@ -15,7 +15,9 @@ function HeaderDefault() {
 
   return (
     <div className="h-14 w-full flex items-center justify-center ">
-      <h1 className="text-black font-semibold text-[16px]">{currentTitle}</h1>
+      <h1 className="text-black dark:text-white font-semibold text-[16px]">
+        {currentTitle}
+      </h1>
     </div>
   );
 }

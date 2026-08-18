@@ -49,7 +49,7 @@ function Register() {
 
   return (
     <div className="w-full max-w-92.5 mx-auto">
-      <h1 className="text-base font-bold text-center text-black mb-8">
+      <h1 className="text-base font-bold text-center text-black dark:text-white mb-8">
         Đăng ký tài khoản mới
       </h1>
 

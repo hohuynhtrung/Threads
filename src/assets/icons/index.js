@@ -18,6 +18,8 @@ import iconLikePost from "./iconLikePost.svg";
 import iconCommentPost from "./iconCommentPost.svg";
 import iconRepostPost from "./iconRepostPost.svg";
 import iconSharePost from "./iconSharePost.svg";
+import iconLightMode from "./iconLightMode.svg";
+import iconDarkMode from "./iconDarkMode.svg";
 
 const Icons = {
   iconThread,
@@ -40,6 +42,8 @@ const Icons = {
   iconCommentPost,
   iconRepostPost,
   iconSharePost,
+  iconLightMode,
+  iconDarkMode,
 };
 
 export default Icons;

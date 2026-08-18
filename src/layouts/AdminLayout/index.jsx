@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 
 function AdminLayout() {
   return (
-    <div className="relative min-h-screen w-full bg-white flex flex-col justify-between overflow-hidden">
+    <div className="relative min-h-screen w-full bg-white dark:bg-zinc-900 flex flex-col justify-between overflow-hidden">
       <div
         className={
           "absolute inset-0 hidden sm:block pointer-events-none bg-no-repeat md:bg-top lg:bg-size-[125%_auto] lg:bg-position-[center_bottom_350px]"

@@ -13,17 +13,21 @@ function Posts() {
 
   if (loading)
     return (
-      <div className="p-4 text-center text-gray-500">Đang tải bài viết...</div>
+      <div className="p-4 text-center text-gray-500 dark:text-gray-500">
+        Đang tải bài viết...
+      </div>
     );
   if (error)
     return (
-      <div className="p-4 text-center text-red-500">
+      <div className="p-4 text-center text-red-500 dark:text-red-500">
         Có lỗi xảy ra: {typeof error === "string" ? error : "Lỗi hệ thống"}
       </div>
     );
   if (!posts?.length)
     return (
-      <div className="p-4 text-center text-gray-400">Chưa có bài viết nào.</div>
+      <div className="p-4 text-center text-gray-400 dark:text-gray-500">
+        Chưa có bài viết nào.
+      </div>
     );
 
   return (

@@ -38,7 +38,7 @@ function Login() {
 
   return (
     <div className="w-full max-w-92.5 mx-auto">
-      <h1 className="text-base font-bold text-center text-black mb-8">
+      <h1 className="text-base font-bold text-center text-black dark:text-white mb-8">
         Đăng nhập bằng tài khoản Instagram
       </h1>
 
@@ -71,12 +71,12 @@ function Login() {
       <div className="flex flex-col text-center mt-5">
         <a
           href="#"
-          className="text-sm text-gray-400 hover:text-gray-600 transition-colors mb-4"
+          className="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 transition-colors mb-4"
         >
           Quên mật khẩu?
         </a>
 
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-gray-500 dark:text-gray-400">
           Bạn có tài khoản chưa?{" "}
           <Link
             to="/register"

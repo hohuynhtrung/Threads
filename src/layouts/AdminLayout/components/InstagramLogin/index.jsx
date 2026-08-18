@@ -7,15 +7,17 @@ export default function InstagramLoginButton() {
     <div className="w-full max-w-sm flex flex-col items-center gap-3 mt-4">
       {/* Divider: Line - OR - Line */}
       <div className="flex items-center justify-center w-full">
-        <div className="h-px w-12 bg-gray-200" />
-        <span className="px-3 text-sm text-gray-400 font-normal">or</span>
-        <div className="h-px w-12 bg-gray-200" />
+        <div className="h-px w-12 bg-gray-200 dark:bg-zinc-700" />
+        <span className="px-3 text-sm text-gray-400 dark:text-gray-500 font-normal">
+          or
+        </span>
+        <div className="h-px w-12 bg-gray-200 dark:bg-zinc-700" />
       </div>
 
       {/* Button Continue with Instagram */}
       <button
         type="button"
-        className="w-full flex items-center justify-between p-4 bg-white border border-gray-200 rounded-2xl shadow-sm hover:bg-gray-50 transition-colors duration-200 group cursor-pointer"
+        className="w-full flex items-center justify-between p-4 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-2xl shadow-sm hover:bg-gray-50 dark:hover:bg-zinc-700 transition-colors duration-200 group cursor-pointer"
       >
         <div className="flex items-center gap-3.5">
           <img
@@ -25,7 +27,7 @@ export default function InstagramLoginButton() {
           />
 
           <div className="flex flex-col items-start text-left">
-            <span className="text-gray-500 text-sm font-medium ">
+            <span className="text-gray-500 dark:text-gray-400 text-sm font-medium ">
               Continue with Instagram
             </span>
           </div>
