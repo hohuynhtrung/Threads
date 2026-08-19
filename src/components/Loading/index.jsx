@@ -7,7 +7,7 @@ function Loading() {
       <motion.img
         src={Icons.iconThread}
         alt="Loading"
-        className="w-20 h-20"
+        className="w-20 h-20 dark:invert"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
       />

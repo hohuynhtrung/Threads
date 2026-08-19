@@ -20,7 +20,7 @@ export const login = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await http.post("/auth/login", data);
-      return response.data;
+      return response;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
     }
@@ -32,7 +32,7 @@ export const register = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await http.post("/auth/register", data);
-      return response.data;
+      return response;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.errors ||

@@ -15,3 +15,17 @@ export const getPost = createAsyncThunk(
     }
   },
 );
+
+export const createPost = createAsyncThunk(
+  "posts",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await http.post("/posts", data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Create Posts failed",
+      );
+    }
+  },
+);

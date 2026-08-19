@@ -8,11 +8,9 @@ import { store } from "@/store/store";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <ReduxProvider store={store}>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
-    </ReduxProvider>
-  </StrictMode>,
+  <ReduxProvider store={store}>
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  </ReduxProvider>,
 );

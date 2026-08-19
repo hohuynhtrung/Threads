@@ -29,47 +29,61 @@ export const authSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
+      // GET CURRENT USER
       .addCase(getCurrentUser.pending, (state) => {
         state.fetching = true;
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
-        state.currentUser = action.payload;
+        state.currentUser = action.payload?.data || action.payload;
         state.fetching = false;
       })
-      .addCase(getCurrentUser.rejected, (state, action) => {
+      .addCase(getCurrentUser.rejected, (state) => {
         state.currentUser = null;
         state.fetching = false;
       })
+
+      // LOGIN
       .addCase(login.pending, (state) => {
         state.loggingIn = true;
         state.loginError = null;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loggingIn = false;
-        state.currentUser = action.payload.user;
-        if (action.payload.access_token) {
-          localStorage.setItem("accessToken", action.payload.access_token);
-        }
-        if (action.payload.refresh_token) {
-          localStorage.setItem("refreshToken", action.payload.refresh_token);
+
+        // Bóc tách đúng object data từ response
+        const resData = action.payload?.data;
+        if (resData) {
+          state.currentUser = resData.user;
+          if (resData.access_token) {
+            localStorage.setItem("accessToken", resData.access_token);
+          }
+          if (resData.refresh_token) {
+            localStorage.setItem("refreshToken", resData.refresh_token);
+          }
         }
       })
       .addCase(login.rejected, (state, action) => {
         state.loggingIn = false;
         state.loginError = action.payload;
       })
+
+      // REGISTER
       .addCase(register.pending, (state) => {
         state.registering = true;
         state.registerError = null;
       })
       .addCase(register.fulfilled, (state, action) => {
         state.registering = false;
-        state.currentUser = action.payload.user;
-        if (action.payload.access_token) {
-          localStorage.setItem("accessToken", action.payload.access_token);
-        }
-        if (action.payload.refresh_token) {
-          localStorage.setItem("refreshToken", action.payload.refresh_token);
+
+        const resData = action.payload?.data;
+        if (resData) {
+          state.currentUser = resData.user;
+          if (resData.access_token) {
+            localStorage.setItem("accessToken", resData.access_token);
+          }
+          if (resData.refresh_token) {
+            localStorage.setItem("refreshToken", resData.refresh_token);
+          }
         }
       })
       .addCase(register.rejected, (state, action) => {

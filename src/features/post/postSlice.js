@@ -1,4 +1,4 @@
-import { getPost } from "@/services/post/postService";
+import { createPost, getPost } from "@/services/post/postService";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -26,6 +26,21 @@ export const postSlice = createSlice({
         state.list = action.payload || [];
       })
       .addCase(getPost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createPost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPost.fulfilled, (state, action) => {
+        state.loading = false;
+        const newPost = action.payload?.data;
+        if (newPost) {
+          state.list.unshift(newPost);
+        }
+      })
+      .addCase(createPost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
