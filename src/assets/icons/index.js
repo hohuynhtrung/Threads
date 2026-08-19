@@ -20,6 +20,16 @@ import iconRepostPost from "./iconRepostPost.svg";
 import iconSharePost from "./iconSharePost.svg";
 import iconLightMode from "./iconLightMode.svg";
 import iconDarkMode from "./iconDarkMode.svg";
+import iconAddGif from "./iconAddGif.svg";
+import iconAttachMedia from "./iconAttachMedia.svg";
+import iconAddEmoji from "./iconAddEmoji.svg";
+import iconAddPoll from "./iconAddPoll.svg";
+import iconAttachText from "./iconAttachText.svg";
+import iconAddLocation from "./iconAddLocation.svg";
+import iconAddMusic from "./iconAddMusic.svg";
+import iconAddOption from "./iconAddOption.svg";
+import iconMorePost from "./iconMorePost.svg";
+import iconDraftsPost from "./iconDraftsPost.svg";
 
 const Icons = {
   iconThread,
@@ -44,6 +54,16 @@ const Icons = {
   iconSharePost,
   iconLightMode,
   iconDarkMode,
+  iconAddGif,
+  iconAttachMedia,
+  iconAddEmoji,
+  iconAddPoll,
+  iconAttachText,
+  iconAddLocation,
+  iconAddMusic,
+  iconAddOption,
+  iconMorePost,
+  iconDraftsPost,
 };
 
 export default Icons;

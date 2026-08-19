@@ -1,14 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-
 import http from "@/utils/http";
 
 export const getCurrentUser = createAsyncThunk(
   "auth/getCurrentUser",
   async (_, { rejectWithValue }) => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
-      return rejectWithValue("No access token");
-    }
     try {
       const response = await http.get("/auth/user");
       return response.data;
@@ -43,21 +38,6 @@ export const register = createAsyncThunk(
         error.response?.data?.errors ||
           error.response?.data?.message ||
           "Register failed",
-      );
-    }
-  },
-);
-
-export const refreshToken = createAsyncThunk(
-  "auth/refreshToken",
-  async (_, { rejectWithValue }) => {
-    try {
-      const refresh_token = localStorage.getItem("refreshToken");
-      const response = await http.post("/auth/refresh", { refresh_token });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Refresh token failed",
       );
     }
   },

@@ -21,7 +21,7 @@ function DefaultLayout() {
             <HeaderDefault />
           </div>
 
-          <div className="flex-1 bg-white dark:bg-[#101010] border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
+          <div className="flex-1 bg-white pt-2 dark:bg-[#101010] border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
             <Outlet />
           </div>
         </main>

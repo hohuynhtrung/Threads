@@ -18,6 +18,10 @@ function Login() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(loginSchema),
+    defaultValues: {
+      account: "example1@example.com",
+      password: "example123",
+    },
   });
 
   const onSubmit = async (data) => {

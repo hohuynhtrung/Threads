@@ -6,7 +6,6 @@ export const httpClient = axios.create({
   baseURL,
 });
 
-// Automatically attach the access token to every request
 httpClient.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem("accessToken");
   if (accessToken) {
@@ -15,7 +14,6 @@ httpClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Automatically refresh token on 401 error
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -31,17 +29,30 @@ const processQueue = (error) => {
 };
 
 const refreshToken = async () => {
+  // ✅ Thêm: check refresh_token hợp lệ trước khi gọi API
   const refresh_token = localStorage.getItem("refreshToken");
-  if (!refresh_token) {
-    processQueue(new Error("No refresh token"));
-    throw new Error("No refresh token");
+  if (
+    !refresh_token ||
+    refresh_token === "undefined" ||
+    refresh_token === "null"
+  ) {
+    processQueue(new Error("No valid refresh token"));
+    throw new Error("No valid refresh token");
   }
+
   try {
     const result = await axios.post(`${baseURL}/auth/refresh`, {
-      refresh_token: localStorage.getItem("refreshToken"),
+      refresh_token,
     });
-    localStorage.setItem("accessToken", result.data.data.access_token);
-    localStorage.setItem("refreshToken", result.data.data.refresh_token);
+
+    // ✅ Thêm: validate token trả về trước khi lưu
+    const tokens = result.data?.data;
+    if (!tokens?.access_token || !tokens?.refresh_token) {
+      throw new Error("Invalid refresh response");
+    }
+
+    localStorage.setItem("accessToken", tokens.access_token);
+    localStorage.setItem("refreshToken", tokens.refresh_token);
     processQueue(null);
   } catch (error) {
     processQueue(error);
@@ -57,6 +68,7 @@ const getNewToken = async () => {
     try {
       await refreshToken();
     } finally {
+      // ✅ Thêm: dùng finally để đảm bảo isRefreshing luôn được reset dù thành công hay lỗi
       isRefreshing = false;
     }
     return;
@@ -72,6 +84,12 @@ httpClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // guard nếu originalRequest không tồn tại
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    // loại trừ auth endpoints khỏi luồng refresh
     const isAuthEndpoint =
       originalRequest.url?.includes("/auth/login") ||
       originalRequest.url?.includes("/auth/register") ||
@@ -88,15 +106,15 @@ httpClient.interceptors.response.use(
       try {
         await getNewToken();
         return httpClient(originalRequest);
-      } catch (refreshError) {
-        return Promise.reject(refreshError);
+      } catch (error) {
+        return Promise.reject(error);
       }
     }
+
     return Promise.reject(error);
   },
 );
 
-//API utility functions
 const _send = async (method, path, data, config) => {
   const response = await httpClient.request({
     ...config,
@@ -107,25 +125,11 @@ const _send = async (method, path, data, config) => {
   return response.data;
 };
 
-const get = async (path, config) => {
-  return await _send("get", path, null, config);
-};
-
-const post = async (path, data, config) => {
-  return await _send("post", path, data, config);
-};
-
-const put = async (path, data, config) => {
-  return await _send("put", path, data, config);
-};
-
-const patch = async (path, data, config) => {
-  return await _send("patch", path, data, config);
-};
-
-const del = async (path, config) => {
-  return await _send("delete", path, null, config);
-};
+const get = async (path, config) => _send("get", path, null, config);
+const post = async (path, data, config) => _send("post", path, data, config);
+const put = async (path, data, config) => _send("put", path, data, config);
+const patch = async (path, data, config) => _send("patch", path, data, config);
+const del = async (path, config) => _send("delete", path, null, config);
 
 const http = { get, post, put, patch, del };
 
