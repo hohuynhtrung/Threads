@@ -19,11 +19,23 @@ export const postSlice = createSlice({
     builder
       .addCase(getPost.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(getPost.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload || [];
+
+        const newPosts = action.payload?.data || [];
+        const pagination = action.payload?.pagination || null;
+
+        if (pagination) {
+          state.pagination = pagination;
+        }
+        const currentPage = action.meta.arg?.page || 1;
+
+        if (currentPage === 1) {
+          state.list = newPosts;
+        } else {
+          state.list = [...state.list, ...newPosts];
+        }
       })
       .addCase(getPost.rejected, (state, action) => {
         state.loading = false;

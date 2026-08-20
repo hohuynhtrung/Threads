@@ -16,7 +16,7 @@ function UsersSuggestions({ user, onToggleFollow }) {
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
             <div className="flex items-center">
-              <span className="font-semibold text-[16px] mr-2 hover:underline">
+              <span className="font-semibold text-[16px] mr-2 hover:underline dark:text-white">
                 {user.username}
               </span>
               {user.verified && (

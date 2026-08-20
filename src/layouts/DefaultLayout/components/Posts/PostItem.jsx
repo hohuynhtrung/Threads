@@ -15,7 +15,7 @@ function PostItem({ post }) {
               {formatTimeAgo(post.created_at)}
             </span>
           </h4>
-          <p className="text-[16px] font-normal text-black dark:text-[#e8eaeb] whitespace-pre-line my-1">
+          <p className="w-138.5 text-[16px] font-normal text-black dark:text-[#e8eaeb] whitespace-normal wrap-break-word my-1">
             {post.content}
           </p>
           <PostActions post={post} />

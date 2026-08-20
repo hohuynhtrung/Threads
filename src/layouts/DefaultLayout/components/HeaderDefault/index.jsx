@@ -81,7 +81,7 @@ function HeaderDefault() {
   };
 
   return (
-    <div className="h-16 w-full flex items-center justify-center bg-white dark:border-zinc-800">
+    <div className="h-16 w-full flex items-center justify-center bg-white dark:border-zinc-800 dark:bg-[#101010]">
       {renderHeaderContent()}
     </div>
   );
