@@ -30,6 +30,7 @@ import iconAddMusic from "./iconAddMusic.svg";
 import iconAddOption from "./iconAddOption.svg";
 import iconMorePost from "./iconMorePost.svg";
 import iconDraftsPost from "./iconDraftsPost.svg";
+import iconTickBlue from "./iconTickBlue.svg";
 
 const Icons = {
   iconThread,
@@ -64,6 +65,7 @@ const Icons = {
   iconAddOption,
   iconMorePost,
   iconDraftsPost,
+  iconTickBlue,
 };
 
 export default Icons;

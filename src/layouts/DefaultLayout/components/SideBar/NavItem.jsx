@@ -1,11 +1,18 @@
 import { Link } from "react-router";
 
-function NavItem({ item, isActive, isLoggedIn }) {
+function NavItem({ item, isActive, isLoggedIn, onClick }) {
   const currentIcon = isActive && item.iconActive ? item.iconActive : item.icon;
+
+  const handleClick = (e) => {
+    if (onClick) {
+      onClick(e, item);
+    }
+  };
 
   return (
     <Link
       to={item.path}
+      onClick={handleClick}
       title={!isLoggedIn ? item.label : undefined}
       className={`flex items-center gap-3 p-2 rounded-xl hover:bg-gray-500/10 dark:hover:bg-[#292a2a] active:scale-95 transition-all duration-200 group ${
         isLoggedIn

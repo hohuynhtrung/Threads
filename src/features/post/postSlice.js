@@ -1,5 +1,5 @@
-import { createPost, getPost } from "@/services/post/postService";
 import { createSlice } from "@reduxjs/toolkit";
+import { createPost, getPost } from "@/services/post/postService";
 
 const initialState = {
   list: [],
