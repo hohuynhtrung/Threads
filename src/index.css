@@ -9,6 +9,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   font-family:
     system-ui,
@@ -22,6 +26,11 @@ body {
     "Open Sans",
     "Helvetica Neue",
     sans-serif;
+}
+
+body[data-scroll-locked] {
+  overflow: auto !important;
+  padding-right: 0px !important;
 }
 
 @theme inline {

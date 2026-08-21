@@ -29,6 +29,16 @@ function CreateThreadModal({ isOpen, onClose }) {
   const dispatch = useDispatch();
   const currentUser = useCurrentUser();
 
+  // Hàm xử lý tự động tính toán chiều cao textarea theo nội dung nhập vào
+  const handleContentChange = (e) => {
+    const value = e.target.value;
+    setContent(value);
+
+    // Dynamic auto-height
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
+  };
+
   const handlePostSubmit = async () => {
     if (!content.trim() || isSubmitting) return;
 
@@ -54,8 +64,8 @@ function CreateThreadModal({ isOpen, onClose }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-155 h-69 p-0 rounded-2xl bg-white dark:bg-[#1e1e1e] border-none shadow-2xl overflow-hidden text-black dark:text-white">
-        <DialogHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-zinc-800">
+      <DialogContent className="w-155 max-w-[90vw] min-h-69 max-h-[85vh] p-0 rounded-2xl bg-white dark:bg-[#1e1e1e] border-none shadow-2xl overflow-y-auto text-black dark:text-white flex flex-col justify-between">
+        <DialogHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-zinc-800 shrink-0">
           <button
             onClick={onClose}
             className="text-sm text-black dark:text-white hover:opacity-70 transition cursor-pointer"
@@ -86,7 +96,7 @@ function CreateThreadModal({ isOpen, onClose }) {
           </div>
         </DialogHeader>
 
-        <div className="p-2">
+        <div className="p-4 flex-1 overflow-y-auto">
           <div className="flex gap-3">
             <div className="flex flex-col items-center gap-2">
               <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-zinc-700 overflow-hidden shrink-0">
@@ -119,11 +129,13 @@ function CreateThreadModal({ isOpen, onClose }) {
                 />
               </div>
 
+              {/* Textarea dãn theo chiều cao nội dung và tự xuống dòng */}
               <textarea
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
+                onChange={handleContentChange}
                 placeholder="What's new?"
-                className="w-full h-6 bg-transparent text-[16px] border-none outline-none resize-none placeholder-gray-400 dark:placeholder-zinc-500 focus:ring-0 p-0"
+                rows={1}
+                className="w-full min-h-6 max-h-62.5 bg-transparent text-[16px] border-none outline-none resize-none placeholder-gray-400 dark:placeholder-zinc-500 focus:ring-0 p-0 overflow-y-auto leading-normal"
               />
 
               <div className="flex items-center gap-3 py-2 text-gray-400 dark:text-zinc-500">
@@ -148,7 +160,7 @@ function CreateThreadModal({ isOpen, onClose }) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-zinc-800">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-zinc-800 shrink-0">
           <button className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition cursor-pointer">
             <img
               src={Icons.iconAddOption}

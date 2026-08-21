@@ -1,8 +1,13 @@
-import { getSuggestion } from "@/services/search/searchServer";
+import { getSearchAll, getSuggestion } from "@/services/search/searchServer";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  list: [],
+  suggestions: [],
+  searchResults: {
+    users: [],
+    topics: [],
+  },
+  isSearched: false,
   loading: false,
   error: null,
 };
@@ -11,8 +16,9 @@ export const searchSlice = createSlice({
   name: "search",
   initialState,
   reducers: {
-    setList(state, action) {
-      state.list = action.payload;
+    clearSearchResults(state) {
+      state.searchResults = { users: [], topics: [] };
+      state.isSearched = false;
     },
   },
   extraReducers: (builder) => {
@@ -23,15 +29,29 @@ export const searchSlice = createSlice({
       })
       .addCase(getSuggestion.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload || [];
+        state.suggestions = action.payload || [];
       })
       .addCase(getSuggestion.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getSearchAll.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getSearchAll.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isSearched = true;
+        state.searchResults = action.payload?.data ||
+          action.payload || { users: {}, topics: [] };
+      })
+      .addCase(getSearchAll.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const { setList } = searchSlice.actions;
+export const { clearSearchResults } = searchSlice.actions;
 
 export default searchSlice.reducer;
