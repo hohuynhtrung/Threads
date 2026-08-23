@@ -7,13 +7,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Icons from "@/assets/icons";
-import { useLogout } from "@/features/auth/hook";
 import { useTheme } from "@/context/ThemeContext";
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "@/services/auth";
 
 function MoreMenu() {
-  const logout = useLogout();
   const { theme, setTheme } = useTheme();
   const [currentView, setCurrentView] = useState("main");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    navigate("/login");
+  };
 
   return (
     <DropdownMenu
@@ -74,7 +82,7 @@ function MoreMenu() {
             </DropdownMenuItem>
 
             <DropdownMenuItem
-              onClick={logout}
+              onClick={handleLogout}
               className="text-sm font-medium py-2.5 px-3 rounded-lg cursor-pointer text-red-500 focus:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30"
             >
               Log out

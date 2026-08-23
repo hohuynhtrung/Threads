@@ -11,7 +11,7 @@ function SearchDropdownModal({
   onClose,
 }) {
   return (
-    <div className="absolute top-full left-0 right-12 mt-2 bg-white dark:bg-[#181818] border border-gray-200 dark:border-zinc-800 rounded-2xl shadow-2xl max-h-[420px] overflow-y-auto z-50 transition-all">
+    <div className="absolute top-full left-0 right-12 mt-2 bg-white dark:bg-[#181818] border border-gray-200 dark:border-zinc-800 rounded-2xl shadow-2xl max-h-105 overflow-y-auto z-50 transition-all">
       {/* Loading state */}
       {loading && (
         <div className="flex justify-center items-center py-6">

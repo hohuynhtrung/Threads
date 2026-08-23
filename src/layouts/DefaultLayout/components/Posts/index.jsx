@@ -10,7 +10,6 @@ function Posts() {
   const {
     list: posts,
     loading,
-    error,
     pagination,
   } = useSelector((state) => state.posts);
 
@@ -46,7 +45,7 @@ function Posts() {
           <Spinner />
         </div>
       )}
-      {!posts.length && (
+      {!loading && posts.length === 0 && (
         <div className="p-4 text-center text-gray-400 dark:text-gray-500">
           Chưa có bài viết nào.
         </div>
@@ -55,7 +54,7 @@ function Posts() {
         <PostItem key={post.id} post={post} />
       ))}
 
-      {loading && (
+      {loading && posts.length > 0 && (
         <div className="w-full flex items-center justify-center my-5">
           <Spinner />
         </div>

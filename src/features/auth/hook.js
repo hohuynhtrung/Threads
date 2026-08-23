@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearLoginError, logout } from "@/features/auth/authSlice";
-import { getCurrentUser, login, register } from "@/services/auth";
+import { clearLoginError, resetAuth } from "@/features/auth/authSlice";
+import { getCurrentUser, login, logoutUser, register } from "@/services/auth";
 
 export const useFetchCurrentUser = () => {
   const dispatch = useDispatch();
@@ -44,5 +44,15 @@ export const useRegister = () => {
 
 export const useLogout = () => {
   const dispatch = useDispatch();
-  return () => dispatch(logout());
+  const loggingOut = useSelector((state) => state.auth.loggingOut);
+
+  const handleLogout = () => dispatch(logoutUser());
+
+  const handleResetAuth = () => dispatch(resetAuth());
+
+  return {
+    logout: handleLogout,
+    resetAuth: handleResetAuth,
+    loggingOut,
+  };
 };

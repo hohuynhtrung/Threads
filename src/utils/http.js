@@ -6,10 +6,6 @@ export const httpClient = axios.create({
   baseURL,
 });
 
-// ============================================
-// REQUEST INTERCEPTOR
-// ============================================
-
 httpClient.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem("accessToken");
 
@@ -20,97 +16,89 @@ httpClient.interceptors.request.use((config) => {
   return config;
 });
 
-// ============================================
-// REFRESH TOKEN
-// ============================================
-
 let refreshPromise = null;
 
 const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
   if (!refreshToken) {
-    throw new Error("No refresh token");
+    throw new Error("No refresh token available");
   }
 
   const response = await axios.post(`${baseURL}/auth/refresh`, {
     refresh_token: refreshToken,
   });
 
-  console.log("Refresh response:", response.data);
+  const data = response.data?.data || response.data;
 
-  const data = response.data.data;
+  if (data?.access_token) {
+    localStorage.setItem("accessToken", data.access_token);
 
-  // API của bạn trả đúng cấu trúc:
-  // data.access_token
-  // data.refresh_token
-  // data.expires_in
+    if (data.refresh_token) {
+      localStorage.setItem("refreshToken", data.refresh_token);
+    }
 
-  localStorage.setItem("accessToken", data.access_token);
-
-  if (data.refresh_token) {
-    localStorage.setItem("refreshToken", data.refresh_token);
+    return data.access_token;
   }
 
-  return data.access_token;
+  throw new Error("Failed to refresh access token");
 };
 
-// ============================================
-// RESPONSE INTERCEPTOR
-// ============================================
+const handleForceLogout = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+
+  if (!window.location.pathname.includes("/login")) {
+    window.location.href = "/login";
+  }
+};
 
 httpClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
 
   async (error) => {
     const originalRequest = error.config;
+    const status = error.response?.status;
 
-    const is401 = error.response?.status === 401;
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
 
-    if (!is401 || !originalRequest || originalRequest._retry) {
+    const isRefreshEndpoint = originalRequest.url?.includes("/auth/refresh");
+    if (isRefreshEndpoint && (status === 401 || status === 403)) {
+      handleForceLogout();
+      return Promise.reject(error);
+    }
+
+    if (status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
     }
 
     const refreshToken = localStorage.getItem("refreshToken");
-
-    // Không có refresh token thì không refresh
     if (!refreshToken) {
+      handleForceLogout();
       return Promise.reject(error);
     }
 
     originalRequest._retry = true;
 
     try {
-      // Nếu chưa có request refresh thì tạo một request
       if (!refreshPromise) {
         refreshPromise = refreshAccessToken().finally(() => {
           refreshPromise = null;
         });
       }
 
-      // Các request 401 khác sẽ chờ request refresh này
       const newAccessToken = await refreshPromise;
 
-      // Gắn access token mới
       originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-      // Gọi lại request cũ
       return httpClient(originalRequest);
     } catch (refreshError) {
-      // Refresh token cũng hết hạn / invalid
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-
+      handleForceLogout();
       return Promise.reject(refreshError);
     }
   },
 );
-
-// ============================================
-// HTTP METHODS
-// ============================================
 
 const _send = async (method, path, data, config) => {
   const response = await httpClient.request({
@@ -124,13 +112,9 @@ const _send = async (method, path, data, config) => {
 };
 
 const get = async (path, config) => _send("get", path, null, config);
-
 const post = async (path, data, config) => _send("post", path, data, config);
-
 const put = async (path, data, config) => _send("put", path, data, config);
-
 const patch = async (path, data, config) => _send("patch", path, data, config);
-
 const del = async (path, config) => _send("delete", path, null, config);
 
 const http = {

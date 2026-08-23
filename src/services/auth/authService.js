@@ -42,3 +42,15 @@ export const register = createAsyncThunk(
     }
   },
 );
+
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await http.post("/auth/logout");
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  },
+);
