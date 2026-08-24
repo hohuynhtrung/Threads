@@ -9,7 +9,11 @@ import Search from "@/page/Search";
 import { useAuthFetching } from "@/features/auth/hook";
 import Loading from "@/components/Loading";
 import GuestRoute from "@/components/GuestRoute";
-import Message from "@/page/Message";
+import Messages from "@/page/Messages";
+import Activity from "@/page/Activity";
+import Profile from "@/page/Profile";
+import Insights from "@/page/Insights";
+import Saved from "@/page/Saved";
 
 function AppRoutes() {
   const fetching = useAuthFetching();
@@ -23,7 +27,11 @@ function AppRoutes() {
         <Route element={<DefaultLayout />}>
           <Route index element={<Home />} />
           <Route path="search" element={<Search />} />
-          <Route path="messages" element={<Message />} />
+          <Route path="messages" element={<Messages />} />
+          <Route path="activity" element={<Activity />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="insights" element={<Insights />} />
+          <Route path="saved" element={<Saved />} />
         </Route>
         <Route element={<AdminLayout />}>
           <Route

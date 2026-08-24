@@ -20,7 +20,7 @@ function MoreMenu() {
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
-    navigate("/login");
+    navigate("/" || "/login");
   };
 
   return (

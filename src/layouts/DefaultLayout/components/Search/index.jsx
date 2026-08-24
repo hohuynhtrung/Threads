@@ -55,7 +55,7 @@ function Search() {
   return (
     <div
       ref={dropdownRef}
-      className="relative flex items-center justify-between gap-3 w-full pr-4"
+      className="relative max-w-160 flex items-center justify-between gap-3 w-full pr-4"
     >
       {/* Input Field */}
       <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-zinc-800 rounded-[25px] focus-within:border-gray-300 dark:focus-within:border-zinc-700 transition">

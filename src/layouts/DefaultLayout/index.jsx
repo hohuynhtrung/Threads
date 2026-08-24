@@ -1,7 +1,6 @@
 import { Outlet } from "react-router";
 
 import SideBar from "@/layouts/DefaultLayout/components/SideBar";
-import HeaderDefault from "@/layouts/DefaultLayout/components/HeaderDefault";
 import CardAuth from "@/layouts/DefaultLayout/components/CardAuth";
 import { useCurrentUser } from "@/features/auth/hook";
 
@@ -15,13 +14,9 @@ function DefaultLayout() {
       </aside>
       <div className="flex justify-center w-full max-w-307.5">
         <main
-          className={`${currentUser ? "ml-0" : "ml-20"} flex-1 min-h-screen max-w-160 w-full flex flex-col pt-3`}
+          className={`${currentUser ? "ml-0" : "ml-20"} flex-1 min-h-screen w-full flex flex-col`}
         >
-          <div className="bg-[#fafafa] dark:bg-[#101010] border-none">
-            <HeaderDefault />
-          </div>
-
-          <div className="flex-1 bg-white pt-2 dark:bg-[#101010] border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
+          <div className="flex-1 flex justify-center bg-white dark:bg-[#101010]">
             <Outlet />
           </div>
         </main>
