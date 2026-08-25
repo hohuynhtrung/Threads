@@ -1,14 +1,26 @@
+import React from "react";
+import { useDispatch } from "react-redux";
 import Icons from "@/assets/icons";
 import { formatCount } from "@/layouts/DefaultLayout/helper/formatCount";
+import { likePost } from "@/services/post/postService";
 
 function PostActions({ post }) {
+  const dispatch = useDispatch();
+
+  const handleLike = () => {
+    dispatch(likePost(post.id));
+  };
+
+  const isPostLike = Boolean(post.is_liked_by_auth ?? post.is_liked);
+
   const actions = [
     {
       id: "like",
       label: "Like",
-      icon: Icons.iconLikePost,
+      icon: isPostLike ? Icons.iconLikedPost : Icons.iconLikePost,
       count: post.likes_count,
-      onClick: () => console.log("Like post:", post.id),
+      isLiked: isPostLike,
+      onClick: handleLike,
     },
     {
       id: "comment",
@@ -39,12 +51,18 @@ function PostActions({ post }) {
         <button
           key={action.id}
           onClick={action.onClick}
-          className="flex items-center p-2 rounded-2xl gap-1.5 text-sm font-normal hover:bg-gray-100 dark:hover:bg-[#2d2d2d] transition-colors active:scale-95 cursor-pointer"
+          className={`flex items-center p-2 rounded-2xl gap-1.5 text-sm font-normal transition-colors active:scale-95 cursor-pointer hover:bg-gray-100 dark:hover:bg-[#2d2d2d] ${
+            action.isLiked
+              ? "fill-red-500 text-red-500"
+              : "text-gray-500 hover:text-black dark:hover:text-white"
+          }`}
         >
           <img
             src={action.icon}
             alt={action.label}
-            className="w-5 h-5 object-contain dark:invert"
+            className={`w-5 h-5 object-contain ${
+              action.isLiked ? "" : "dark:invert"
+            }`}
           />
           <span>{formatCount(action.count)}</span>
         </button>

@@ -15,6 +15,7 @@ import iconGhost from "./iconGhost.svg";
 import iconPin from "./iconPin.svg";
 import iconMore from "./iconMore.svg";
 import iconLikePost from "./iconLikePost.svg";
+import iconLikedPost from "./iconLikedPost.svg";
 import iconCommentPost from "./iconCommentPost.svg";
 import iconRepostPost from "./iconRepostPost.svg";
 import iconSharePost from "./iconSharePost.svg";
@@ -51,6 +52,7 @@ const Icons = {
   iconPin,
   iconMore,
   iconLikePost,
+  iconLikedPost,
   iconCommentPost,
   iconRepostPost,
   iconSharePost,

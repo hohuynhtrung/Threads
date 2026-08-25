@@ -26,3 +26,18 @@ export const createPost = createAsyncThunk(
     }
   },
 );
+
+export const likePost = createAsyncThunk(
+  "posts/likePost",
+  async (postId, { rejectWithValue }) => {
+    try {
+      const response = await http.post(`/posts/${postId}/like`);
+      return { postId, data: response.data };
+    } catch (error) {
+      return rejectWithValue({
+        postId,
+        message: error.response?.data?.message || "Like failed",
+      });
+    }
+  },
+);
