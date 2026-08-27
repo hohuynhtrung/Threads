@@ -5,10 +5,15 @@ import { getCurrentUser, login, logoutUser, register } from "@/services/auth";
 
 export const useFetchCurrentUser = () => {
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.auth.currentUser);
 
   useEffect(() => {
-    dispatch(getCurrentUser());
-  }, [dispatch]);
+    const token = localStorage.getItem("accessToken");
+
+    if (token && !currentUser) {
+      dispatch(getCurrentUser());
+    }
+  }, [dispatch, currentUser]);
 };
 
 export const useCurrentUser = () => {

@@ -3,7 +3,7 @@ import { login, getCurrentUser, register, logoutUser } from "@/services/auth";
 
 const initialState = {
   currentUser: null,
-  fetching: true,
+  fetching: false,
   loginError: null,
   loggingIn: false,
   registerError: null,
