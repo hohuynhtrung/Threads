@@ -1,39 +1,26 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { getPost } from "@/services/post/postService";
 import PostItem from "@/layouts/DefaultLayout/components/Posts/PostItem";
 import { Spinner } from "@/components/ui/spinner";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { usePosts } from "@/features/post/hook";
 
 function Posts() {
-  const dispatch = useDispatch();
-  const {
-    list: posts,
-    loading,
-    pagination,
-  } = useSelector((state) => state.posts);
+  const { posts, loading, pagination, hasMore, fetchPosts } = usePosts();
 
   useEffect(() => {
     if (posts.length === 0) {
-      dispatch(getPost({ type: "for_you", page: 1 }));
+      fetchPosts({ type: "for_you", page: 1 });
     }
-  }, [dispatch, posts.length]);
-
-  const hasMore = pagination
-    ? pagination.current_page < pagination.last_page
-    : false;
+  }, [fetchPosts, posts.length]);
 
   const handleLoadMore = () => {
     if (hasMore && !loading && pagination) {
-      const nextPage = pagination.current_page + 1;
-
-      dispatch(
-        getPost({
-          type: "for_you",
-          page: nextPage,
-          per_page: pagination.per_page,
-        }),
-      );
+      fetchPosts({
+        type: "for_you",
+        page: nextPage,
+        per_page: pagination.per_page,
+      });
     }
   };
 

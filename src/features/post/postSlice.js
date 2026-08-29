@@ -1,8 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createPost, getPost, likePost } from "@/services/post/postService";
+import {
+  createPost,
+  getPost,
+  getPostById,
+  likePost,
+} from "@/services/post/postService";
 
 const initialState = {
   list: [],
+  currentPost: null,
+  pagination: null,
   loading: false,
   error: null,
 };
@@ -13,6 +20,9 @@ export const postSlice = createSlice({
   reducers: {
     setList(state, action) {
       state.list = action.payload;
+    },
+    clearCurrentPost(state) {
+      state.currentPost = null;
     },
   },
   extraReducers: (builder) => {
@@ -39,6 +49,19 @@ export const postSlice = createSlice({
         }
       })
       .addCase(getPost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // GET POST BY ID
+      .addCase(getPostById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getPostById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentPost = action.payload;
+      })
+      .addCase(getPostById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -103,6 +126,6 @@ export const postSlice = createSlice({
   },
 });
 
-export const { setList } = postSlice.actions;
+export const { setList, clearCurrentPost } = postSlice.actions;
 
 export default postSlice.reducer;

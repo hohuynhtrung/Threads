@@ -1,9 +1,18 @@
 import { formatTimeAgo } from "@/layouts/DefaultLayout/helper/formatTimeAgo";
 import PostActions from "@/layouts/DefaultLayout/components/Posts/PostActions";
+import { useNavigate } from "react-router";
 
 function PostItem({ post }) {
+  const navigate = useNavigate();
+
+  const handlePostDetail = (e) => {
+    navigate(`/post/${post.id}`);
+  };
   return (
-    <div className="p-4 border-b border-[#00000026] dark:border-[#292a2a] flex flex-col gap-2">
+    <div
+      onClick={handlePostDetail}
+      className="p-4 border-b border-[#00000026] dark:border-[#292a2a] flex flex-col gap-2 cursor-pointer"
+    >
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center font-bold text-gray-700 dark:text-gray-300 shrink-0">
           {post.user?.name?.[0]?.toUpperCase() || "U"}

@@ -8,7 +8,19 @@ export const getPost = createAsyncThunk(
       const response = await http.get("/posts/feed", { params });
       return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Lỗi hệ thống");
+      return rejectWithValue(error.response?.message || "Lỗi hệ thống");
+    }
+  },
+);
+
+export const getPostById = createAsyncThunk(
+  "posts/getPostId",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await http.get(`/posts/${id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.message || "Get Post by id failed");
     }
   },
 );
@@ -36,7 +48,7 @@ export const likePost = createAsyncThunk(
     } catch (error) {
       return rejectWithValue({
         postId,
-        message: error.response?.data?.message || "Like failed",
+        message: error.response?.message || "Like failed",
       });
     }
   },

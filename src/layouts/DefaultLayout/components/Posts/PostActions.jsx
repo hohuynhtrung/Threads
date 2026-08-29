@@ -1,14 +1,14 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import Icons from "@/assets/icons";
 import { formatCount } from "@/layouts/DefaultLayout/helper/formatCount";
-import { likePost } from "@/services/post/postService";
+import { usePosts } from "@/features/post/hook";
 
 function PostActions({ post }) {
-  const dispatch = useDispatch();
+  const { likePost } = usePosts();
 
-  const handleLike = () => {
-    dispatch(likePost(post.id));
+  const handleLike = (e) => {
+    e.stopPropagation();
+    likePost(post.id);
   };
 
   const isPostLike = Boolean(post.is_liked_by_auth ?? post.is_liked);

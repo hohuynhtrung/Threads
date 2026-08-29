@@ -14,6 +14,7 @@ import Activity from "@/page/Activity";
 import Profile from "@/page/Profile";
 import Insights from "@/page/Insights";
 import Saved from "@/page/Saved";
+import PostDetail from "@/page/PostDetail";
 
 function AppRoutes() {
   const fetching = useAuthFetching();
@@ -26,6 +27,7 @@ function AppRoutes() {
       <Routes>
         <Route element={<DefaultLayout />}>
           <Route index element={<Home />} />
+          <Route path="post/:id" element={<PostDetail />} />
           <Route path="search" element={<Search />} />
           <Route path="messages" element={<Messages />} />
           <Route path="activity" element={<Activity />} />
