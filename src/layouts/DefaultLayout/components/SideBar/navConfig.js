@@ -20,7 +20,7 @@ export const MAIN_NAV_ITEMS = [
     id: "profile",
     label: "Profile",
     icon: Icons.iconProfile,
-    path: "/profile",
+    path: "/login",
   },
 ];
 
@@ -36,7 +36,7 @@ export const AUTH_MAIN_NAV_ITEMS_TOP = [
   { id: "search", label: "Search", icon: Icons.iconSearch, path: "/search" },
 ];
 
-export const AUTH_MAIN_NAV_ITEMS_BOTTOM = [
+export const AUTH_MAIN_NAV_ITEMS_BOTTOM = (username) => [
   {
     id: "messages",
     label: "Messages",
@@ -53,7 +53,7 @@ export const AUTH_MAIN_NAV_ITEMS_BOTTOM = [
     id: "profile",
     label: "Profile",
     icon: Icons.iconProfile,
-    path: "/profile",
+    path: username && `/@${username}`,
   },
   {
     id: "insights",

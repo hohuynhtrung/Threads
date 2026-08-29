@@ -2,12 +2,10 @@ import Icons from "@/assets/icons";
 import Images from "@/assets/images";
 import { useFetchFollowers } from "@/features/follow/hook";
 
-function UserInfo({ user }) {
-  // 1. Kiểm tra nếu chưa có dữ liệu user thì dừng render để tránh crash app
+function ProfileInfo({ user }) {
   if (!user) return null;
 
-  // 2. Lấy followers theo user._id (hoặc user.id)
-  const userId = user._id || user.id;
+  const userId = user.id;
   const { followersCount, loading } = useFetchFollowers(userId);
 
   return (
@@ -41,14 +39,23 @@ function UserInfo({ user }) {
         </p>
       )}
 
-      <div className="flex items-center justify-between mt-4 text-xs text-gray-500">
-        <span className="hover:underline cursor-pointer">
-          {loading ? "..." : `${followersCount} followers`}
+      <div className="flex items-center justify-between mt-4">
+        <span className="text-sm font-medium opacity-40 hover:underline cursor-pointer">
+          {loading
+            ? "..."
+            : `${followersCount} ${followersCount > 1 ? "followers" : "follower"}`}
         </span>
         <div className="flex items-center gap-3">
           <button className="hover:opacity-70 transition cursor-pointer">
             <img
-              src={Icons.iconInstagram || Icons.iconMorePost}
+              src={Icons.iconInsights}
+              alt="Insights"
+              className="w-5 h-5 dark:invert"
+            />
+          </button>
+          <button className="hover:opacity-70 transition cursor-pointer">
+            <img
+              src={Icons.iconInstagram}
               alt="Instagram"
               className="w-5 h-5 dark:invert"
             />
@@ -63,4 +70,4 @@ function UserInfo({ user }) {
   );
 }
 
-export default UserInfo;
+export default ProfileInfo;

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import DefaultLayout from "@/layouts/DefaultLayout";
 import Home from "@/page/Home";
@@ -29,7 +29,7 @@ function AppRoutes() {
           <Route path="search" element={<Search />} />
           <Route path="messages" element={<Messages />} />
           <Route path="activity" element={<Activity />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="/:username" element={<Profile />} />
           <Route path="insights" element={<Insights />} />
           <Route path="saved" element={<Saved />} />
         </Route>

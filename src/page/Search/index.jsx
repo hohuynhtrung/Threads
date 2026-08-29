@@ -7,6 +7,7 @@ import { useCurrentUser } from "@/features/auth/hook";
 
 import { Spinner } from "@/components/ui/spinner";
 import Icons from "@/assets/icons";
+import Footer from "@/layouts/components/Footer";
 
 function Search() {
   const dispatch = useDispatch();
@@ -36,22 +37,22 @@ function Search() {
           <div className="w-6" />
         )}
       </div>
-      <div className="w-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
-        {loading && !suggestions?.length && (
-          <div className="w-full flex items-center justify-center py-6">
-            <Spinner />
-          </div>
-        )}
-
+      <div className="w-full h-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl mb-14">
         <div className="w-full">
           <div className="font-medium text-gray-400 dark:text-zinc-500 p-4 text-sm">
             Follow suggestions
           </div>
+          {loading && !suggestions?.length && (
+            <div className="w-full flex items-center justify-center py-6">
+              <Spinner />
+            </div>
+          )}
           {suggestions?.map((suggestion) => (
             <UsersSuggestions key={suggestion.id} user={suggestion} />
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

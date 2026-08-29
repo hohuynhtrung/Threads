@@ -1,12 +1,16 @@
 import Icons from "@/assets/icons";
 import { useCurrentUser, useFetchCurrentUser } from "@/features/auth/hook";
-import UserInfo from "@/page/Profile/UserInfo";
+import CreatePostInput from "@/layouts/DefaultLayout/components/CreatePostInput";
+import ProfileInfo from "@/page/Profile/ProfileInfo";
+import ProfileTabs from "@/page/Profile/ProfileTabs";
+import { useState } from "react";
 
 function Profile() {
   // Gọi hook tự động fetch thông tin user khi component mount
   useFetchCurrentUser();
 
   const currentUser = useCurrentUser();
+  const [activeTab, setActiveTab] = useState("threads");
 
   if (!currentUser) return;
 
@@ -28,8 +32,16 @@ function Profile() {
           <div className="w-6" />
         )}
       </div>
-      <div className="w-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
-        <UserInfo user={currentUser} />
+      <div className="w-full h-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
+        <ProfileInfo user={currentUser} />
+        <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
+        <CreatePostInput />
+        <div className="flex flex-col items-center justify-center py-12 text-gray-400 text-sm">
+          {activeTab === "threads" && <p>No threads posted yet.</p>}
+          {activeTab === "replies" && <p>No replies yet.</p>}
+          {activeTab === "media" && <p>No media posts yet.</p>}
+          {activeTab === "reposts" && <p>No reposts yet.</p>}
+        </div>
       </div>
     </div>
   );

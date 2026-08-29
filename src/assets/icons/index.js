@@ -33,6 +33,7 @@ import iconMorePost from "./iconMorePost.svg";
 import iconDraftsPost from "./iconDraftsPost.svg";
 import iconTickBlue from "./iconTickBlue.svg";
 import iconNewMessage from "./iconNewMessage.svg";
+import iconInstagram from "./iconInstagram.svg";
 
 const Icons = {
   iconThread,
@@ -70,6 +71,7 @@ const Icons = {
   iconDraftsPost,
   iconTickBlue,
   iconNewMessage,
+  iconInstagram,
 };
 
 export default Icons;

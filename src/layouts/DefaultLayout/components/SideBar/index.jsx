@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 
 import Icons from "@/assets/icons";
 import { useCurrentUser } from "@/features/auth/hook";
@@ -22,10 +22,10 @@ function SideBar() {
   const currentUser = useCurrentUser();
   const isLoggedIn = Boolean(currentUser);
   const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
+  const dispatch = useDispatch();
 
   const navBottomItems = isLoggedIn ? AUTH_BOTTOM_NAV_ITEMS : BOTTOM_NAV_ITEMS;
-
-  const dispatch = useDispatch();
+  const navAuthBottomItems = AUTH_MAIN_NAV_ITEMS_BOTTOM(currentUser?.username);
 
   const handleItemClick = (e, item) => {
     if (item.id === "create") {
@@ -85,7 +85,7 @@ function SideBar() {
               ))}
 
               <div className="mt-4 flex flex-col gap-1">
-                {AUTH_MAIN_NAV_ITEMS_BOTTOM.map((item) => (
+                {navAuthBottomItems.map((item) => (
                   <NavItem
                     key={item.id}
                     item={item}

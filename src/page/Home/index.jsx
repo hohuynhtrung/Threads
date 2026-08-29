@@ -2,13 +2,12 @@ import { useState } from "react";
 
 import { useCurrentUser } from "@/features/auth/hook";
 import CreatePostInput from "@/layouts/DefaultLayout/components/CreatePostInput";
-import CreateThreadModal from "@/layouts/DefaultLayout/components/CreateThreadModal";
 
 import Posts from "@/layouts/DefaultLayout/components/Posts";
 import Icons from "@/assets/icons";
+import Footer from "@/layouts/components/Footer";
 
 function Home() {
-  const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
   const currentUser = useCurrentUser();
   const isLoggedIn = Boolean(currentUser);
 
@@ -30,16 +29,11 @@ function Home() {
           <div className="w-6" />
         )}
       </div>
-      <div className="w-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
-        {currentUser && (
-          <CreatePostInput onOpenModal={() => setIsOpenCreateModal(true)} />
-        )}
+      <div className="w-full h-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl mb-14">
+        {currentUser && <CreatePostInput />}
         <Posts />
-        <CreateThreadModal
-          isOpen={isOpenCreateModal}
-          onClose={() => setIsOpenCreateModal(false)}
-        />
       </div>
+      <Footer />
     </div>
   );
 }
