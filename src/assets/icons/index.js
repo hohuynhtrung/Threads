@@ -34,6 +34,8 @@ import iconDraftsPost from "./iconDraftsPost.svg";
 import iconTickBlue from "./iconTickBlue.svg";
 import iconNewMessage from "./iconNewMessage.svg";
 import iconInstagram from "./iconInstagram.svg";
+import iconSort from "./iconSort.svg";
+import iconExpandComposer from "./iconExpandComposer.svg";
 
 const Icons = {
   iconThread,
@@ -72,6 +74,8 @@ const Icons = {
   iconTickBlue,
   iconNewMessage,
   iconInstagram,
+  iconSort,
+  iconExpandComposer,
 };
 
 export default Icons;

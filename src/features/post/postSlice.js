@@ -1,17 +1,48 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createPost,
+  createReply,
   getPost,
   getPostById,
+  getReplies,
   likePost,
 } from "@/services/post/postService";
 
 const initialState = {
   list: [],
   currentPost: null,
+  replies: [],
+  loadingReplies: false,
   pagination: null,
   loading: false,
   error: null,
+};
+
+const optimisticLikeToggle = (post) => {
+  if (!post) return;
+
+  const wasLiked = Boolean(post.is_liked_by_auth);
+  const nextLiked = !wasLiked;
+
+  post.is_liked_by_auth = nextLiked;
+  post.is_liked = nextLiked;
+  post.likes_count = Math.max(
+    0,
+    (post.likes_count || 0) + (nextLiked ? 1 : -1),
+  );
+};
+
+const applyLikeResponse = (post, data) => {
+  if (!post || !data) return;
+
+  if (typeof data.is_liked === "boolean") {
+    post.is_liked = data.is_liked;
+    post.is_liked_by_auth = data.is_liked;
+  }
+
+  if (typeof data.likes_count === "number") {
+    post.likes_count = data.likes_count;
+  }
 };
 
 export const postSlice = createSlice({
@@ -23,6 +54,9 @@ export const postSlice = createSlice({
     },
     clearCurrentPost(state) {
       state.currentPost = null;
+    },
+    clearReplies(state) {
+      state.replies = [];
     },
   },
   extraReducers: (builder) => {
@@ -59,7 +93,7 @@ export const postSlice = createSlice({
       })
       .addCase(getPostById.fulfilled, (state, action) => {
         state.loading = false;
-        state.currentPost = action.payload;
+        state.currentPost = action.payload.data;
       })
       .addCase(getPostById.rejected, (state, action) => {
         state.loading = false;
@@ -84,48 +118,90 @@ export const postSlice = createSlice({
       //Like Post
       .addCase(likePost.pending, (state, action) => {
         const postId = action.meta.arg;
-        const post = state.list.find((item) => item.id === postId);
+        const listPost = state.list.find((item) => item.id === postId);
+        const detailPost =
+          state.currentPost && state.currentPost.id === postId
+            ? state.currentPost
+            : null;
 
-        if (post) {
-          const wasLiked = Boolean(post.is_liked_by_auth ?? post.is_liked);
-          post.is_liked_by_auth = !wasLiked;
-          post.likes_count = wasLiked
-            ? Math.max(0, (post.likes_count || 0) - 1)
-            : (post.likes_count || 0) + 1;
-        }
+        optimisticLikeToggle(listPost);
+        optimisticLikeToggle(detailPost);
       })
 
       .addCase(likePost.fulfilled, (state, action) => {
         const { postId, data } = action.payload || {};
-        const post = state.list.find((item) => item.id === postId);
+        const listPost = state.list.find((item) => item.id === postId);
+        const detailPost =
+          state.currentPost && state.currentPost.id === postId
+            ? state.currentPost
+            : null;
 
         const resData = data?.data || data;
 
-        if (post && resData) {
-          if (typeof resData.is_liked === "boolean") {
-            post.is_liked = resData.is_liked;
-          }
-          if (typeof resData.likes_count === "number") {
-            post.likes_count = resData.likes_count;
-          }
-        }
+        applyLikeResponse(listPost, resData);
+        applyLikeResponse(detailPost, resData);
       })
 
       .addCase(likePost.rejected, (state, action) => {
         const { postId } = action.payload || {};
-        const post = state.list.find((item) => item.id === postId);
+        const listPost = state.list.find((item) => item.id === postId);
+        const detailPost =
+          state.currentPost && state.currentPost.id === postId
+            ? state.currentPost
+            : null;
 
-        if (post) {
-          const isCurrentlyLiked = post.is_liked;
-          post.is_liked = !isCurrentlyLiked;
-          post.likes_count = isCurrentlyLiked
-            ? Math.max(0, (post.likes_count || 0) - 1)
-            : (post.likes_count || 0) + 1;
+        optimisticLikeToggle(listPost);
+        optimisticLikeToggle(detailPost);
+      })
+      // GET replies
+      .addCase(getReplies.pending, (state) => {
+        state.loadingReplies = true;
+      })
+      .addCase(getReplies.fulfilled, (state, action) => {
+        state.loadingReplies = false;
+        const resData = action.payload.data;
+
+        state.replies = Array.isArray(resData) ? resData : [];
+      })
+      .addCase(getReplies.rejected, (state, action) => {
+        state.loadingReplies = false;
+        state.error = action.payload;
+      })
+      // POST Reply
+      .addCase(createReply.pending, (state) => {
+        state.loadingReplies = true;
+        state.error = null;
+      })
+      .addCase(createReply.fulfilled, (state, action) => {
+        state.loadingReplies = false;
+
+        const { postId, data } = action.payload || {};
+        const newReply = data?.data || data;
+
+        if (newReply) {
+          // Đẩy reply mới vào đầu danh sách replies
+          state.replies.unshift(newReply);
+
+          // Tự động tăng replies_count ở currentPost (nếu đang xem trang Detail)
+          if (state.currentPost && state.currentPost.id === postId) {
+            state.currentPost.replies_count =
+              (state.currentPost.replies_count || 0) + 1;
+          }
+
+          // Tự động tăng replies_count trong state.list (nếu có)
+          const listPost = state.list.find((item) => item.id === postId);
+          if (listPost) {
+            listPost.replies_count = (listPost.replies_count || 0) + 1;
+          }
         }
+      })
+      .addCase(createReply.rejected, (state, action) => {
+        state.loadingReplies = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { setList, clearCurrentPost } = postSlice.actions;
+export const { setList, clearCurrentPost, clearReplies } = postSlice.actions;
 
 export default postSlice.reducer;

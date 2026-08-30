@@ -1,8 +1,14 @@
-import { clearCurrentPost, setList } from "@/features/post/postSlice";
+import {
+  clearCurrentPost,
+  clearReplies,
+  setList,
+} from "@/features/post/postSlice";
 import {
   createPost,
+  createReply,
   getPost,
   getPostById,
+  getReplies,
   likePost,
 } from "@/services/post/postService";
 import { useCallback } from "react";
@@ -13,6 +19,8 @@ export const usePosts = () => {
 
   const posts = useSelector((state) => state.posts.list);
   const currentPost = useSelector((state) => state.posts.currentPost);
+  const replies = useSelector((state) => state.posts.replies);
+  const loadingReplies = useSelector((state) => state.posts.loadingReplies);
   const pagination = useSelector((state) => state.posts.pagination);
   const loading = useSelector((state) => state.posts.loading);
   const error = useSelector((state) => state.posts.error);
@@ -24,6 +32,11 @@ export const usePosts = () => {
 
   const fetchPostById = useCallback(
     (id) => dispatch(getPostById(id)),
+    [dispatch],
+  );
+
+  const fetchReplies = useCallback(
+    (postId) => dispatch(getReplies(postId)),
     [dispatch],
   );
 
@@ -47,17 +60,34 @@ export const usePosts = () => {
     [dispatch],
   );
 
+  const handleClearReplies = useCallback(
+    () => dispatch(clearReplies()),
+    [dispatch],
+  );
+
+  const handleCreateReply = useCallback(
+    (postId, content) => dispatch(createReply({ postId, content })),
+    [dispatch],
+  );
   return {
     posts,
     currentPost,
+    pagination,
+    replies,
+    loadingReplies,
     loading,
     error,
-    hasMore: pagination ? pagination.curren_page < pagination.last_page : false,
+    hasMore: pagination
+      ? pagination.current_page < pagination.last_page
+      : false,
     fetchPosts,
     fetchPostById,
+    fetchReplies,
     createPost: handleCreatePost,
     likePost: handleLikePost,
     setPosts: handleSetPosts,
     clearCurrentPost: handleClearCurrentPost,
+    clearReplies: handleClearReplies,
+    createReply: handleCreateReply,
   };
 };

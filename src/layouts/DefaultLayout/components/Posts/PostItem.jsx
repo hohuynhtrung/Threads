@@ -1,21 +1,28 @@
 import { formatTimeAgo } from "@/layouts/DefaultLayout/helper/formatTimeAgo";
 import PostActions from "@/layouts/DefaultLayout/components/Posts/PostActions";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
+import Images from "@/assets/images";
 
 function PostItem({ post }) {
   const navigate = useNavigate();
+  const params = useParams();
 
   const handlePostDetail = (e) => {
+    if (params.id === String(post.id)) return;
     navigate(`/post/${post.id}`);
   };
+
   return (
     <div
       onClick={handlePostDetail}
-      className="p-4 border-b border-[#00000026] dark:border-[#292a2a] flex flex-col gap-2 cursor-pointer"
+      className="flex flex-col gap-2 cursor-pointer"
     >
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center font-bold text-gray-700 dark:text-gray-300 shrink-0">
-          {post.user?.name?.[0]?.toUpperCase() || "U"}
+          <img
+            src={post.user.avatar_url || Images.imgDefaultAvatar}
+            className="rounded-[50%]"
+          />
         </div>
         <div className="w-full">
           <h4 className="font-semibold text-black dark:text-[#e8eaeb] text-[16px] leading-tight">

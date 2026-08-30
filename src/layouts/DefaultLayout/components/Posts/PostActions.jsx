@@ -11,7 +11,7 @@ function PostActions({ post }) {
     likePost(post.id);
   };
 
-  const isPostLike = Boolean(post.is_liked_by_auth ?? post.is_liked);
+  const isPostLike = Boolean(post.is_liked_by_auth);
 
   const actions = [
     {
