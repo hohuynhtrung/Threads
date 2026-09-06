@@ -16,12 +16,7 @@ export const MAIN_NAV_ITEMS = [
     icon: Icons.iconHeart,
     path: "/activity",
   },
-  {
-    id: "profile",
-    label: "Profile",
-    icon: Icons.iconProfile,
-    path: "/login",
-  },
+  { id: "profile", label: "Profile", icon: Icons.iconProfile, path: "/login" },
 ];
 
 export const AUTH_MAIN_NAV_ITEMS_TOP = [
@@ -61,12 +56,7 @@ export const AUTH_MAIN_NAV_ITEMS_BOTTOM = (username) => [
     icon: Icons.iconInsights,
     path: "/insights",
   },
-  {
-    id: "saved",
-    label: "Saved",
-    icon: Icons.iconSaved,
-    path: "/saved",
-  },
+  { id: "saved", label: "Saved", icon: Icons.iconSaved, path: "/saved" },
 ];
 
 export const BOTTOM_NAV_ITEMS = [

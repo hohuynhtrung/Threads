@@ -7,7 +7,7 @@ function PostItem({ post }) {
   const navigate = useNavigate();
   const params = useParams();
 
-  const handlePostDetail = (e) => {
+  const handlePostDetail = () => {
     if (params.id === String(post.id)) return;
     navigate(`/post/${post.id}`);
   };
@@ -26,7 +26,7 @@ function PostItem({ post }) {
         </div>
         <div className="w-full">
           <h4 className="font-semibold text-black dark:text-[#e8eaeb] text-[16px] leading-tight">
-            {post.user?.name || "Người dùng"}
+            {post.user?.name}
             <span className="text-[14px] font-normal text-gray-400 dark:text-[#cccccc] ml-2">
               {formatTimeAgo(post.created_at)}
             </span>
@@ -34,7 +34,9 @@ function PostItem({ post }) {
           <p className="w-138.5 text-[16px] font-normal text-black dark:text-[#e8eaeb] whitespace-normal wrap-break-word my-1">
             {post.content}
           </p>
-          <PostActions post={post} />
+          <div onClick={(e) => e.stopPropagation()}>
+            <PostActions post={post} />
+          </div>
         </div>
       </div>
     </div>

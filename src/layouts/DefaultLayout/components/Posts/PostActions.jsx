@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import Icons from "@/assets/icons";
 import { formatCount } from "@/layouts/DefaultLayout/helper/formatCount";
 import { usePosts } from "@/features/post/hook";
+import { useCurrentUser } from "@/features/auth/hook";
+import RequireLoginModal from "@/layouts/DefaultLayout/components/RequireLoginModel";
 
 function PostActions({ post }) {
   const { likePost } = usePosts();
+  const currentUser = useCurrentUser();
+  const isLoggedIn = Boolean(currentUser);
 
-  const handleLike = (e) => {
+  const [isOpenRequireLogin, setIsOpenRequireLogin] = useState(false);
+
+  const handleActionClick = (e, callback) => {
     e.stopPropagation();
-    likePost(post.id);
+    if (!isLoggedIn) {
+      setIsOpenRequireLogin(true);
+      return;
+    }
+    if (callback) callback();
   };
 
   const isPostLike = Boolean(post.is_liked_by_auth);
@@ -20,28 +30,28 @@ function PostActions({ post }) {
       icon: isPostLike ? Icons.iconLikedPost : Icons.iconLikePost,
       count: post.likes_count,
       isLiked: isPostLike,
-      onClick: handleLike,
+      onClick: (e) => handleActionClick(e, () => likePost(post.id)),
     },
     {
       id: "comment",
       label: "Comment",
       icon: Icons.iconCommentPost,
       count: post.replies_count,
-      onClick: () => console.log("Comment post:", post.id),
+      onClick: (e) => handleActionClick(e, () => likePost(post.id)),
     },
     {
       id: "repost",
       label: "Repost",
       icon: Icons.iconRepostPost,
       count: post.reposts_and_quotes_count,
-      onClick: () => console.log("Repost post:", post.id),
+      onClick: (e) => handleActionClick(e, () => likePost(post.id)),
     },
     {
       id: "share",
       label: "Share",
       icon: Icons.iconSharePost,
       count: post.shares_count || post.reposts_and_quotes_count,
-      onClick: () => console.log("Share post:", post.id),
+      onClick: (e) => handleActionClick(e, () => likePost(post.id)),
     },
   ];
 
@@ -67,6 +77,10 @@ function PostActions({ post }) {
           <span>{formatCount(action.count)}</span>
         </button>
       ))}
+      <RequireLoginModal
+        isOpen={isOpenRequireLogin}
+        onClose={() => setIsOpenRequireLogin(false)}
+      />
     </div>
   );
 }

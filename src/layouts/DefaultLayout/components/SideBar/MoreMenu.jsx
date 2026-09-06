@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,9 +10,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Icons from "@/assets/icons";
 import { useTheme } from "@/context/ThemeContext";
-import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
 import { logoutUser } from "@/services/auth";
+
+const MENU_ITEMS = [
+  { id: "appearance", label: "Appearance", hasSubmenu: true },
+  { id: "settings", label: "Settings" },
+  { id: "sep-1", isSeparator: true },
+  { id: "liked", label: "Liked" },
+  { id: "archive", label: "Archive" },
+  { id: "sep-2", isSeparator: true },
+  { id: "report", label: "Report a problem" },
+];
+
+const THEME_OPTIONS = [
+  { key: "light", icon: Icons.iconLightMode },
+  { key: "dark", icon: Icons.iconDarkMode },
+  { key: "system", label: "Auto" },
+];
 
 function MoreMenu() {
   const { theme, setTheme } = useTheme();
@@ -20,15 +36,13 @@ function MoreMenu() {
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
-    navigate("/" || "/login");
+    navigate("/login");
   };
 
   return (
     <DropdownMenu
       modal={false}
-      onOpenChange={(open) => {
-        if (!open) setCurrentView("main");
-      }}
+      onOpenChange={(open) => !open && setCurrentView("main")}
     >
       <DropdownMenuTrigger asChild>
         <button className="flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-gray-500/10 duration-200 w-full dark:hover:bg-gray-700/50">
@@ -48,39 +62,36 @@ function MoreMenu() {
         className="w-72 rounded-2xl p-2 bg-white dark:bg-zinc-900 shadow-xl border border-gray-100 dark:border-zinc-800"
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
-        {currentView === "main" && (
+        {currentView === "main" ? (
           <>
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentView("appearance");
-              }}
-              className="flex items-center justify-between text-sm font-medium py-2.5 px-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-zinc-800 dark:text-white"
-            >
-              <span>Appearance</span>
-              <span className="text-xs text-gray-400 capitalize">{theme}</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem className="text-sm font-medium py-2.5 px-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-zinc-800 dark:text-white">
-              Settings
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator className="my-1 dark:bg-zinc-800" />
-
-            <DropdownMenuItem className="text-sm font-medium py-2.5 px-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-zinc-800 dark:text-white">
-              Liked
-            </DropdownMenuItem>
-
-            <DropdownMenuItem className="text-sm font-medium py-2.5 px-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-zinc-800 dark:text-white">
-              Archive
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator className="my-1 dark:bg-zinc-800" />
-
-            <DropdownMenuItem className="text-sm font-medium py-2.5 px-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-zinc-800 dark:text-white">
-              Report a problem
-            </DropdownMenuItem>
-
+            {MENU_ITEMS.map((item) => {
+              if (item.isSeparator)
+                return (
+                  <DropdownMenuSeparator
+                    key={item.id}
+                    className="my-1 dark:bg-zinc-800"
+                  />
+                );
+              return (
+                <DropdownMenuItem
+                  key={item.id}
+                  onClick={(e) => {
+                    if (item.hasSubmenu) {
+                      e.preventDefault();
+                      setCurrentView(item.id);
+                    }
+                  }}
+                  className="flex items-center justify-between text-sm font-medium py-2.5 px-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-zinc-800 dark:text-white"
+                >
+                  <span>{item.label}</span>
+                  {item.id === "appearance" && (
+                    <span className="text-xs text-gray-400 capitalize">
+                      {theme}
+                    </span>
+                  )}
+                </DropdownMenuItem>
+              );
+            })}
             <DropdownMenuItem
               onClick={handleLogout}
               className="text-sm font-medium py-2.5 px-3 rounded-lg cursor-pointer text-red-500 focus:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30"
@@ -88,9 +99,7 @@ function MoreMenu() {
               Log out
             </DropdownMenuItem>
           </>
-        )}
-
-        {currentView === "appearance" && (
+        ) : (
           <div className="p-1">
             <div className="flex items-center justify-between pb-3 mb-2 border-b border-gray-100 dark:border-zinc-800">
               <button
@@ -119,49 +128,28 @@ function MoreMenu() {
             </div>
 
             <div className="flex items-center justify-between bg-gray-100/80 dark:bg-zinc-800 p-1 rounded-xl">
-              <button
-                type="button"
-                onClick={() => setTheme("light")}
-                className={`flex-1 flex items-center justify-center py-2 rounded-lg transition-all ${
-                  theme === "light"
-                    ? "bg-white dark:bg-zinc-700 shadow-sm font-medium"
-                    : "hover:bg-gray-200/50 dark:hover:bg-zinc-700/50 text-gray-500 dark:text-gray-400"
-                }`}
-              >
-                <img
-                  src={Icons.iconLightMode}
-                  alt="Light"
-                  className="h-5 w-5 object-contain dark:invert"
-                />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setTheme("dark")}
-                className={`flex-1 flex items-center justify-center py-2 rounded-lg transition-all ${
-                  theme === "dark"
-                    ? "bg-white dark:bg-zinc-700 shadow-sm font-medium"
-                    : "hover:bg-gray-200/50 dark:hover:bg-zinc-700/50 text-gray-500 dark:text-gray-400"
-                }`}
-              >
-                <img
-                  src={Icons.iconDarkMode}
-                  alt="Dark"
-                  className="h-5 w-5 object-contain dark:invert"
-                />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setTheme("system")}
-                className={`flex-1 flex items-center justify-center py-2 text-sm transition-all ${
-                  theme === "system"
-                    ? "bg-white dark:bg-zinc-700 shadow-sm font-semibold text-black dark:text-white"
-                    : "hover:bg-gray-200/50 dark:hover:bg-zinc-700/50 text-gray-500 dark:text-gray-400"
-                }`}
-              >
-                Auto
-              </button>
+              {THEME_OPTIONS.map((opt) => (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => setTheme(opt.key)}
+                  className={`flex-1 flex items-center justify-center py-2 rounded-lg text-sm transition-all ${
+                    theme === opt.key
+                      ? "bg-white dark:bg-zinc-700 shadow-sm font-semibold text-black dark:text-white"
+                      : "hover:bg-gray-200/50 dark:hover:bg-zinc-700/50 text-gray-500 dark:text-gray-400"
+                  }`}
+                >
+                  {opt.icon ? (
+                    <img
+                      src={opt.icon}
+                      alt={opt.key}
+                      className="h-5 w-5 object-contain dark:invert"
+                    />
+                  ) : (
+                    opt.label
+                  )}
+                </button>
+              ))}
             </div>
           </div>
         )}

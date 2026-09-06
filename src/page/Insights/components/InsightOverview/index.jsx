@@ -71,7 +71,7 @@ function InsightOverview() {
 
         <div className="mb-6">
           <div className="text-3xl font-bold dark:text-white">0</div>
-          <div className="text-xs text-gray-400 mt-1">0.0% since Aug 7</div>
+          <div className="text-xs text-gray-400 mt-1">0.0%</div>
         </div>
 
         <h4 className="font-semibold text-sm dark:text-white mb-3">
