@@ -14,10 +14,11 @@ import {
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-export const usePosts = () => {
+export const usePosts = (currentUserId) => {
   const dispatch = useDispatch();
 
   const posts = useSelector((state) => state.posts.list);
+  const myPosts = posts.filter((post) => post.user_id === currentUserId);
   const currentPost = useSelector((state) => state.posts.currentPost);
   const replies = useSelector((state) => state.posts.replies);
   const loadingReplies = useSelector((state) => state.posts.loadingReplies);
@@ -71,6 +72,7 @@ export const usePosts = () => {
   );
   return {
     posts,
+    myPosts,
     currentPost,
     pagination,
     replies,

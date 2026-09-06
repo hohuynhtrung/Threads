@@ -1,7 +1,15 @@
+import InsightOverview from "@/page/Insights/components/InsightOverview";
+import InsightSidebar from "@/page/Insights/components/InsightSidebar";
+
 function Insights() {
   return (
-    <div className="w-full h-full border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl ">
-      <h1>Insights</h1>
+    <div className="w-full flex ml-37.5">
+      <div className="w-[40%]">
+        <InsightSidebar />
+      </div>
+      <div className="w-[60%]">
+        <InsightOverview />
+      </div>
     </div>
   );
 }

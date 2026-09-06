@@ -1,5 +1,5 @@
-import MessageChatArea from "@/page/Messages/component/MessageChatArea";
-import MessageSidebar from "@/page/Messages/component/MessageSidebar";
+import MessageChatArea from "@/page/Messages/components/MessageChatArea";
+import MessageSidebar from "@/page/Messages/components/MessageSidebar";
 
 function Messages() {
   return (

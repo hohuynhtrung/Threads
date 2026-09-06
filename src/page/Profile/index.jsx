@@ -1,9 +1,12 @@
 import Icons from "@/assets/icons";
+import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser, useFetchCurrentUser } from "@/features/auth/hook";
+import { usePosts } from "@/features/post/hook";
 import CreatePostInput from "@/layouts/DefaultLayout/components/CreatePostInput";
+import PostItem from "@/layouts/DefaultLayout/components/Posts/PostItem";
 import ProfileInfo from "@/page/Profile/ProfileInfo";
 import ProfileTabs from "@/page/Profile/ProfileTabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Profile() {
   // Gọi hook tự động fetch thông tin user khi component mount
@@ -12,6 +15,14 @@ function Profile() {
   const currentUser = useCurrentUser();
   const [activeTab, setActiveTab] = useState("threads");
 
+  const currentUserId = currentUser?.id;
+  const { posts, myPosts, loading, fetchPosts } = usePosts(currentUserId);
+
+  useEffect(() => {
+    if (posts.length === 0) {
+      fetchPosts({ type: "for_you", page: 1 });
+    }
+  }, [fetchPosts, posts.length]);
   if (!currentUser) return;
 
   return (
@@ -36,8 +47,24 @@ function Profile() {
         <ProfileInfo user={currentUser} />
         <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
         <CreatePostInput />
-        <div className="flex flex-col items-center justify-center py-12 text-gray-400 text-sm">
-          {activeTab === "threads" && <p>No threads posted yet.</p>}
+        <div className="flex flex-col items-center justify-center text-gray-400 text-sm">
+          {activeTab === "threads" && (
+            <div>
+              {loading && myPosts.length === 0 ? (
+                <div className="flex justify-center py-8">
+                  <Spinner />
+                </div>
+              ) : myPosts.length > 0 ? (
+                myPosts.map((post) => (
+                  <div className="p-4 border-b border-[#00000026] dark:border-[#292a2a] ">
+                    <PostItem key={post.id} post={post} />
+                  </div>
+                ))
+              ) : (
+                <p className="text-center py-8">No posts yet.</p>
+              )}
+            </div>
+          )}
           {activeTab === "replies" && <p>No replies yet.</p>}
           {activeTab === "media" && <p>No media posts yet.</p>}
           {activeTab === "reposts" && <p>No reposts yet.</p>}
