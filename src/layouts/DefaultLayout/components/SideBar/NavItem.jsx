@@ -24,10 +24,10 @@ function NavItem({ item, isActive, isLoggedIn, onClick }) {
         src={currentIcon}
         alt={item.label}
         className={cn(
-          "h-5 w-5 object-contain transition-all duration-200 dark:invert",
+          "object-contain transition-all duration-200 dark:invert",
           isActive || isLoggedIn
-            ? "opacity-100"
-            : "opacity-40 group-hover:opacity-70",
+            ? "opacity-100 h-5 w-5"
+            : "opacity-40 group-hover:opacity-70 w-6 h-6",
         )}
       />
 

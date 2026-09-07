@@ -29,7 +29,6 @@ function CreateThreadModal({ isOpen, onClose }) {
   const dispatch = useDispatch();
   const currentUser = useCurrentUser();
 
-  // Hàm xử lý tự động tính toán chiều cao textarea theo nội dung nhập vào
   const handleContentChange = (e) => {
     const value = e.target.value;
     setContent(value);
@@ -51,7 +50,6 @@ function CreateThreadModal({ isOpen, onClose }) {
         }),
       ).unwrap();
 
-      // Reset form & đóng modal
       setContent("");
       setTopic("");
       onClose();

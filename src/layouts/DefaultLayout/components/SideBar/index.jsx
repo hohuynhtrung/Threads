@@ -34,7 +34,7 @@ function SideBar() {
 
   const handleItemClick = (e, item) => {
     if (!isLoggedIn) {
-      if (item.id !== "home" && item.id !== "more") {
+      if (item.id !== "home" && item.id !== "more" && item.id !== "search") {
         e.preventDefault();
         setIsRequireLoginOpen(true);
       }

@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import Icons from "@/assets/icons";
+import { cn } from "@/lib/utils";
 
 const navItemClass =
   "flex items-center text-sm p-2 rounded-xl text-black dark:text-white " +
