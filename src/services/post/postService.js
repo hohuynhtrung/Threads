@@ -83,3 +83,10 @@ export const createReply = createAsyncThunk(
     }
   },
 );
+
+export const fetchRepliesPreview = (
+  postId,
+  { page = 1, per_page = 2 } = {},
+) => {
+  return http.get(`/posts/${postId}/replies`, { params: { page, per_page } });
+};
