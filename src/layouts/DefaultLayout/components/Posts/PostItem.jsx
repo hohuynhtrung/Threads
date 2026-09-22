@@ -1,12 +1,14 @@
+import { useNavigate, useParams } from "react-router";
 import { formatTimeAgo } from "@/layouts/DefaultLayout/helper/formatTimeAgo";
 import PostActions from "@/layouts/DefaultLayout/components/Posts/PostActions";
-import { useNavigate, useParams } from "react-router-dom";
+import ReplyPreviewList from "@/layouts/DefaultLayout/components/Posts/ReplyPreviewList";
+
 import Images from "@/assets/images";
 
 function PostItem({
   post,
   variant = "feed",
-  hasBottomConnector = false,
+  renderReplies = true,
   onCommentClick,
 }) {
   const navigate = useNavigate();
@@ -24,39 +26,44 @@ function PostItem({
   const nameSize = isMain ? "text-[17px]" : "text-[16px]";
   const contentSize = isMain ? "text-[18px]" : "text-[16px]";
 
+  const repliesCount = Number(post?.replies_count || 0);
+
   return (
     <div
       onClick={handlePostDetail}
-      className={`flex flex-col gap-2 cursor-pointer ${isAncestor ? "opacity-70" : ""}`}
+      className={`relative flex flex-col gap-2 cursor-pointer w-full ${isAncestor ? "opacity-70" : ""}`}
     >
-      <div className="flex items-start gap-3">
-        {/* Cột avatar + đường nối thread */}
+      {renderReplies && !isAncestor && repliesCount > 0 && (
+        <div
+          className={`absolute left-[19px] ${isMain ? "top-12" : "top-10"} bottom-0 w-0.5 bg-gray-300 dark:bg-[#2d2d2d] pointer-events-none`}
+        />
+      )}
+
+      <div className="flex items-start gap-3 w-full">
         <div className="flex flex-col items-center shrink-0">
           <div
             className={`${avatarSize} rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center font-bold text-gray-700 dark:text-gray-300 overflow-hidden`}
           >
             <img
-              src={post.user.avatar_url || Images.imgDefaultAvatar}
+              src={post?.user?.avatar_url || Images.imgDefaultAvatar}
               className="rounded-[50%] w-full h-full object-cover"
+              alt={post?.user?.name || "avatar"}
             />
           </div>
-          {hasBottomConnector && (
-            <div className="w-[2px] flex-1 min-h-[60px] mt-1 bg-[#00000026] dark:bg-[#2d2d2d]" />
-          )}
         </div>
 
         <div className="w-full">
           <h4
             className={`font-semibold text-black dark:text-[#e8eaeb] ${nameSize} leading-tight`}
           >
-            {post.user?.name}
+            {post?.user?.name}
             <span className="text-[14px] font-normal text-gray-400 dark:text-[#cccccc] ml-2">
-              {formatTimeAgo(post.created_at)}
+              {formatTimeAgo(post?.created_at)}
             </span>
           </h4>
 
           {/* Reply preview khi chưa có ancestor-chain đầy đủ từ API */}
-          {!isAncestor && post.reply_to_username && (
+          {!isAncestor && post?.reply_to_username && (
             <p className="text-[13px] text-gray-400 dark:text-gray-500">
               Trả lời{" "}
               <span className="text-gray-500 dark:text-gray-400">
@@ -66,14 +73,20 @@ function PostItem({
           )}
 
           <p
-            className={`w-138.5 ${contentSize} font-normal text-black dark:text-[#e8eaeb] whitespace-normal wrap-break-word my-1`}
+            className={`w-full max-w-138.5 ${contentSize} font-normal text-black dark:text-[#e8eaeb] whitespace-normal wrap-break-word my-1`}
           >
-            {post.content}
+            {post?.content}
           </p>
 
           {!isAncestor && (
             <div onClick={(e) => e.stopPropagation()}>
               <PostActions post={post} onCommentClick={onCommentClick} />
+            </div>
+          )}
+
+          {renderReplies && !isAncestor && repliesCount > 0 && (
+            <div className="mt-3 w-full" onClick={(e) => e.stopPropagation()}>
+              <ReplyPreviewList postId={post.id} repliesCount={repliesCount} />
             </div>
           )}
         </div>

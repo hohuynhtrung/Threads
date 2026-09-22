@@ -6,7 +6,6 @@ import { Spinner } from "@/components/ui/spinner";
 import Icons from "@/assets/icons";
 import Footer from "@/layouts/components/Footer";
 import RepilesInput from "@/page/PostDetail/components/RepilesInput";
-import ReplyPreviewList from "@/layouts/DefaultLayout/components/Posts/ReplyPreviewList";
 
 function PostDetail() {
   const { id } = useParams();
@@ -36,7 +35,6 @@ function PostDetail() {
     };
   }, [id, fetchPostById, clearCurrentPost]);
 
-  // Nếu điều hướng tới đây từ nút "Comment" (PostActions) -> focus ô nhập
   useEffect(() => {
     if (location.state?.focusReply) {
       replyInputRef.current?.focus?.();
@@ -60,10 +58,8 @@ function PostDetail() {
     if (!content.trim()) return;
     try {
       const newReply = await createReply(id, content).unwrap();
-      // Optimistic: chèn ngay reply mới thay vì fetch lại toàn bộ
       if (newReply) {
-        fetchReplies(id); // giữ lại fetch để đồng bộ replies_count/pagination;
-        // nếu usePosts có action prependReply, thay dòng trên bằng dispatch prependReply(newReply)
+        fetchReplies(id);
       }
     } catch (error) {
       console.error("Error send reply", error);
@@ -95,7 +91,6 @@ function PostDetail() {
           </div>
         )}
 
-        {/* Chuỗi bài cha, mờ hơn, có đường nối xuống */}
         {!loading &&
           ancestors.map((ancestor) => (
             <div
@@ -108,7 +103,7 @@ function PostDetail() {
 
         {!loading && currentPost && (
           <div className="p-4 border-b border-[#00000026] dark:border-[#292a2a]">
-            <PostItem post={currentPost} variant="main" />
+            <PostItem post={currentPost} variant="main" renderReplies={false} />
           </div>
         )}
 
@@ -127,19 +122,7 @@ function PostDetail() {
                 key={reply.id}
                 className="p-4 border-b border-[#00000026] dark:border-[#292a2a]"
               >
-                <PostItem
-                  post={reply}
-                  hasBottomConnector={reply.replies_count > 0}
-                />
-                {reply.replies_count > 0 && (
-                  <div className="pl-13">
-                    <ReplyPreviewList
-                      postId={reply.id}
-                      repliesCount={reply.replies_count}
-                      hasLeftConnector={reply.replies_count > 0}
-                    />
-                  </div>
-                )}
+                <PostItem post={reply} />
               </div>
             ))}
           </div>

@@ -1,61 +1,94 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { fetchRepliesPreview } from "@/services/post/postService";
 import PostItem from "@/layouts/DefaultLayout/components/Posts/PostItem";
+import { Spinner } from "@/components/ui/spinner";
 
-const PREVIEW_LIMIT = 1;
+const INITIAL_LIMIT = 1;
 
-function ReplyPreviewList({ postId, repliesCount, hasLeftConnector = false }) {
+function ReplyPreviewList({ postId, repliesCount }) {
   const [previewReplies, setPreviewReplies] = useState([]);
-  const [loaded, setLoaded] = useState(false);
-  const navigate = useNavigate();
+  const [loadedKey, setLoadedKey] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [expandedKey, setExpandedKey] = useState(null);
+  const requestKey = `${postId}:${repliesCount}`;
 
   useEffect(() => {
-    if (!repliesCount) return;
+    if (!repliesCount) return undefined;
+
     let ignore = false;
 
-    fetchRepliesPreview(postId, { page: 1, per_page: PREVIEW_LIMIT })
+    fetchRepliesPreview(postId, { page: 1, per_page: INITIAL_LIMIT })
       .then((res) => {
-        if (!ignore) setPreviewReplies(res.data || []);
+        if (!ignore) {
+          setPreviewReplies(res.data || []);
+          setLoadedKey(requestKey);
+        }
       })
       .catch((err) => console.error("Không tải được preview reply:", err))
-      .finally(() => !ignore && setLoaded(true));
+      .finally(() => !ignore && setLoadedKey(requestKey));
 
     return () => {
       ignore = true;
     };
-  }, [postId, repliesCount]);
+  }, [postId, repliesCount, requestKey]);
 
-  if (!repliesCount || !loaded || previewReplies.length === 0) return null;
+  const handleShowAllReplies = async (e) => {
+    e.stopPropagation();
+    if (loadingMore) return;
+
+    setLoadingMore(true);
+    try {
+      const res = await fetchRepliesPreview(postId, {
+        page: 1,
+        per_page: repliesCount,
+      });
+      setPreviewReplies(res.data || []);
+      setExpandedKey(requestKey);
+    } catch (err) {
+      console.error("Không tải được tất cả reply:", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  const isLoaded = loadedKey === requestKey;
+  const isExpanded = expandedKey === requestKey;
+
+  if (!repliesCount || !isLoaded || previewReplies.length === 0) return null;
+
+  const showMoreButton = !isExpanded && repliesCount > previewReplies.length;
 
   return (
-    <div className="flex flex-col gap-2">
-      {previewReplies.map((reply) => (
-        <div
-          key={reply.id}
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/post/${reply.id}`);
-          }}
-          className="relative flex items-start gap-2 cursor-pointer"
-        >
-          {hasLeftConnector && (
-            <div className="absolute top-0 -left-8.25 w-5 h-6 border-l-2 border-b-2 border-[#00000026] dark:border-[#2d2d2d] rounded-bl-2xl pointer-events-none" />
-          )}
-          <PostItem post={reply} />
-        </div>
-      ))}
+    <div className="flex flex-col gap-3 w-full relative">
+      {previewReplies.map((reply) => {
+        return (
+          <div key={reply.id} className="flex items-start w-full">
+            <div className="w-full">
+              <PostItem post={reply} renderReplies={false} />
+            </div>
+          </div>
+        );
+      })}
 
-      {repliesCount > PREVIEW_LIMIT && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/post/${postId}`);
-          }}
-          className="text-[13px] text-gray-400 dark:text-gray-500 pl-8 text-left cursor-pointer"
-        >
-          Xem tất cả {repliesCount} phản hồi
-        </button>
+      {/* Nút Xem thêm phản hồi */}
+      {showMoreButton && (
+        <div className="flex items-center w-full my-1">
+          <button
+            type="button"
+            onClick={handleShowAllReplies}
+            disabled={loadingMore}
+            className="text-[13px] font-semibold text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white pl-2 text-left cursor-pointer flex items-center gap-2 py-0.5 transition"
+          >
+            {loadingMore ? (
+              <div className="flex items-center gap-1.5">
+                <Spinner className="w-3 h-3" />
+                <span>Đang tải...</span>
+              </div>
+            ) : (
+              <span>Xem {repliesCount - 1} câu trả lời</span>
+            )}
+          </button>
+        </div>
       )}
     </div>
   );

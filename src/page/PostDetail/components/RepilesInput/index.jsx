@@ -5,7 +5,7 @@ import {
   ChevronRight,
   Image as ImageIcon,
   Maximize2,
-} from "lucide-react"; // Dùng lucide-react hoặc thay bằng SVG/Icons của dự án bạn
+} from "lucide-react";
 import Images from "@/assets/images";
 import Icons from "@/assets/icons";
 
@@ -28,12 +28,12 @@ function RepilesInput({ targetUsername, currentUserAvatar, onSubmit }) {
         <button className="flex items-center gap-1.5 text-[15px] font-semibold hover:opacity-80 transition cursor-pointer">
           <img src={Icons.iconSort} alt="Sort" className="w-4 h-4" />
           <span>Recent</span>
-          <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          <img src={Icons.iconChevronDown} className="w-4 h-4" />
         </button>
 
         <button className="flex items-center gap-1 text-[14px] font-normal dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition cursor-pointer">
           <span>View activity</span>
-          <ChevronRight className="w-4 h-4" />
+          <img src={Icons.iconChevronRight} className="w-4 h-4" />
         </button>
       </div>
 

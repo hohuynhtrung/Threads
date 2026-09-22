@@ -47,7 +47,7 @@ function Posts() {
           key={post.id}
           className="p-4 border-b border-[#00000026] dark:border-[#292a2a] "
         >
-          <PostItem post={post} />
+          <PostItem post={post} renderReplies={false} />
         </div>
       ))}
 
