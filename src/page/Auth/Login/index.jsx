@@ -20,7 +20,6 @@ function Login() {
     resolver: yupResolver(loginSchema),
     defaultValues: {
       account: "example1@example.com",
-      password: "example123",
     },
   });
 
