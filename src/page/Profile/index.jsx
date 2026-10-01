@@ -7,31 +7,37 @@ import PostItem from "@/layouts/DefaultLayout/components/Posts/PostItem";
 import ProfileInfo from "@/page/Profile/ProfileInfo";
 import ProfileTabs from "@/page/Profile/ProfileTabs";
 import { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 
 function Profile() {
-  // Gọi hook tự động fetch thông tin user khi component mount
   useFetchCurrentUser();
 
   const currentUser = useCurrentUser();
+  const location = useLocation();
+  const { username } = useParams();
   const [activeTab, setActiveTab] = useState("threads");
 
-  const currentUserId = currentUser?.id;
-  const { posts, myPosts, loading, fetchPosts } = usePosts(currentUserId);
+  const profileUser = location.state?.user || currentUser;
+  const profileUserId = profileUser?.id;
+  const { posts, myPosts, loading, fetchPosts } = usePosts(profileUserId);
 
   useEffect(() => {
     if (posts.length === 0) {
       fetchPosts({ type: "for_you", page: 1 });
     }
   }, [fetchPosts, posts.length]);
-  if (!currentUser) return;
+
+  if (!profileUser) return null;
+
+  const isOwnProfile = currentUser && profileUser?.id === currentUser.id;
 
   return (
     <div className="flex flex-col w-160 mt-5">
       <div className="flex max-w-160 items-center justify-between w-full px-4">
         <h1 className="text-black dark:text-white font-semibold text-[20px]">
-          {currentUser.name}
+          {profileUser.name}
         </h1>
-        {currentUser ? (
+        {isOwnProfile ? (
           <button className="hover:opacity-70 transition cursor-pointer">
             <img
               src={Icons.iconMorePost}
@@ -44,20 +50,23 @@ function Profile() {
         )}
       </div>
       <div className="w-full h-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
-        <ProfileInfo user={currentUser} />
+        <ProfileInfo user={profileUser} />
         <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
-        <CreatePostInput />
+        {isOwnProfile && <CreatePostInput />}
         <div className="flex flex-col items-center justify-center text-gray-400 text-sm">
           {activeTab === "threads" && (
-            <div>
+            <div className="w-full">
               {loading && myPosts.length === 0 ? (
                 <div className="flex justify-center py-8">
                   <Spinner />
                 </div>
               ) : myPosts.length > 0 ? (
                 myPosts.map((post) => (
-                  <div className="p-4 border-b border-[#00000026] dark:border-[#292a2a] ">
-                    <PostItem key={post.id} post={post} />
+                  <div
+                    key={post.id}
+                    className="p-4 border-b border-[#00000026] dark:border-[#292a2a]"
+                  >
+                    <PostItem post={post} />
                   </div>
                 ))
               ) : (

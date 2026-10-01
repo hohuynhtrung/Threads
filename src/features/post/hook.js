@@ -1,6 +1,7 @@
 import {
   clearCurrentPost,
   clearReplies,
+  clearReposts,
   setList,
 } from "@/features/post/postSlice";
 import {
@@ -9,7 +10,9 @@ import {
   getPost,
   getPostById,
   getReplies,
+  getUserReposts,
   likePost,
+  repostPost,
 } from "@/services/post/postService";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +25,8 @@ export const usePosts = (currentUserId) => {
   const currentPost = useSelector((state) => state.posts.currentPost);
   const replies = useSelector((state) => state.posts.replies);
   const loadingReplies = useSelector((state) => state.posts.loadingReplies);
+  const reposts = useSelector((state) => state.posts.reposts);
+  const loadingReposts = useSelector((state) => state.posts.loadingReposts);
   const pagination = useSelector((state) => state.posts.pagination);
   const loading = useSelector((state) => state.posts.loading);
   const error = useSelector((state) => state.posts.error);
@@ -38,6 +43,11 @@ export const usePosts = (currentUserId) => {
 
   const fetchReplies = useCallback(
     (postId) => dispatch(getReplies(postId)),
+    [dispatch],
+  );
+
+  const fetchUserReposts = useCallback(
+    (userId) => dispatch(getUserReposts(userId)),
     [dispatch],
   );
 
@@ -70,13 +80,24 @@ export const usePosts = (currentUserId) => {
     (postId, content) => dispatch(createReply({ postId, content })),
     [dispatch],
   );
+
+  const handleRepostPost = useCallback(
+    (postId) => dispatch(repostPost(postId)),
+    [dispatch],
+  );
+  const handleClearReposts = useCallback(
+    () => dispatch(clearReposts()),
+    [dispatch],
+  );
   return {
     posts,
     myPosts,
+    reposts,
     currentPost,
     pagination,
     replies,
     loadingReplies,
+    loadingReposts,
     loading,
     error,
     hasMore: pagination
@@ -90,6 +111,8 @@ export const usePosts = (currentUserId) => {
     setPosts: handleSetPosts,
     clearCurrentPost: handleClearCurrentPost,
     clearReplies: handleClearReplies,
+    clearReposts: handleClearReposts,
     createReply: handleCreateReply,
+    repostPost: handleRepostPost,
   };
 };

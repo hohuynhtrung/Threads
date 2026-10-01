@@ -116,7 +116,7 @@ function PostDetail() {
         </div>
 
         {!loading && replies?.length > 0 && (
-          <div>
+          <div className="w-full">
             {replies.map((reply) => (
               <div
                 key={reply.id}

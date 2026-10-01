@@ -22,6 +22,15 @@ function PostItem({
     navigate(`/post/${post.id}`);
   };
 
+  const handleUserProfile = (event) => {
+    event.stopPropagation();
+
+    const username = post?.user?.username;
+    if (!username) return;
+
+    navigate(`/@${username}`, { state: { user: post.user } });
+  };
+
   const avatarSize = isMain ? "w-12 h-12" : "w-10 h-10";
   const nameSize = isMain ? "text-[17px]" : "text-[16px]";
   const contentSize = isMain ? "text-[18px]" : "text-[16px]";
@@ -35,32 +44,37 @@ function PostItem({
     >
       {renderReplies && !isAncestor && repliesCount > 0 && (
         <div
-          className={`absolute left-[19px] ${isMain ? "top-12" : "top-10"} bottom-0 w-0.5 bg-gray-300 dark:bg-[#2d2d2d] pointer-events-none`}
+          className={`absolute left-4.75 ${isMain ? "top-12" : "top-10"} bottom-0 w-0.5 bg-gray-300 dark:bg-[#2d2d2d] pointer-events-none`}
         />
       )}
 
       <div className="flex items-start gap-3 w-full">
         <div className="flex flex-col items-center shrink-0">
-          <div
-            className={`${avatarSize} rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center font-bold text-gray-700 dark:text-gray-300 overflow-hidden`}
+          <button
+            type="button"
+            onClick={handleUserProfile}
+            className={`${avatarSize} rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center font-bold text-gray-700 dark:text-gray-300 overflow-hidden transition-transform hover:scale-[1.02] cursor-pointer`}
+            aria-label={`View ${post?.user?.name || "user"} profile`}
           >
             <img
               src={post?.user?.avatar_url || Images.imgDefaultAvatar}
               className="rounded-[50%] w-full h-full object-cover"
               alt={post?.user?.name || "avatar"}
             />
-          </div>
+          </button>
         </div>
 
         <div className="w-full">
-          <h4
-            className={`font-semibold text-black dark:text-[#e8eaeb] ${nameSize} leading-tight`}
+          <button
+            type="button"
+            onClick={handleUserProfile}
+            className={`font-semibold text-black dark:text-[#e8eaeb] ${nameSize} leading-tight text-left cursor-pointer hover:underline`}
           >
             {post?.user?.name}
             <span className="text-[14px] font-normal text-gray-400 dark:text-[#cccccc] ml-2">
               {formatTimeAgo(post?.created_at)}
             </span>
-          </h4>
+          </button>
 
           {/* Reply preview khi chưa có ancestor-chain đầy đủ từ API */}
           {!isAncestor && post?.reply_to_username && (

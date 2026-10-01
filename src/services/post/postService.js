@@ -84,6 +84,37 @@ export const createReply = createAsyncThunk(
   },
 );
 
+// POST repost post
+export const repostPost = createAsyncThunk(
+  "posts/repostPost",
+  async (postId, { rejectWithValue }) => {
+    try {
+      const response = await http.post(`/posts/${postId}/repost`);
+      return { postId, data: response };
+    } catch (error) {
+      return rejectWithValue({
+        postId,
+        message: error.message?.data?.message || "Repost failed",
+      });
+    }
+  },
+);
+
+// GET repost post
+export const getUserReposts = createAsyncThunk(
+  "posts/getUserReposts",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await http.get(`users/${userId}/reposts`);
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Get reposts failed",
+      );
+    }
+  },
+);
+
 export const fetchRepliesPreview = (
   postId,
   { page = 1, per_page = 2 } = {},
