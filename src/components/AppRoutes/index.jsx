@@ -23,7 +23,7 @@ function AppRoutes() {
     return <Loading />;
   }
   return (
-    <Router>
+    <Router basename="/Threads/">
       <Routes>
         <Route element={<DefaultLayout />}>
           <Route index element={<Home />} />
@@ -31,7 +31,7 @@ function AppRoutes() {
           <Route path="search" element={<Search />} />
           <Route path="messages" element={<Messages />} />
           <Route path="activity" element={<Activity />} />
-          <Route path="/:username" element={<Profile />} />
+          <Route path=":username" element={<Profile />} />
           <Route path="insights" element={<Insights />} />
           <Route path="saved" element={<Saved />} />
         </Route>
