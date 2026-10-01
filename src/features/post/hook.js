@@ -106,6 +106,7 @@ export const usePosts = (currentUserId) => {
     fetchPosts,
     fetchPostById,
     fetchReplies,
+    fetchUserReposts,
     createPost: handleCreatePost,
     likePost: handleLikePost,
     setPosts: handleSetPosts,

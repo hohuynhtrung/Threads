@@ -105,7 +105,7 @@ export const getUserReposts = createAsyncThunk(
   "posts/getUserReposts",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await http.get(`users/${userId}/reposts`);
+      const response = await http.get(`/users/${userId}/reposts`);
       return response;
     } catch (error) {
       return rejectWithValue(

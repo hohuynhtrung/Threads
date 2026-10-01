@@ -1,11 +1,11 @@
 import Icons from "@/assets/icons";
-import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser, useFetchCurrentUser } from "@/features/auth/hook";
 import { usePosts } from "@/features/post/hook";
 import CreatePostInput from "@/layouts/DefaultLayout/components/CreatePostInput";
-import PostItem from "@/layouts/DefaultLayout/components/Posts/PostItem";
-import ProfileInfo from "@/page/Profile/ProfileInfo";
-import ProfileTabs from "@/page/Profile/ProfileTabs";
+import ProfileInfo from "@/page/Profile/components/ProfileInfo";
+import ProfilePost from "@/page/Profile/components/ProfilePost";
+import ProfileReposts from "@/page/Profile/components/ProfileReposts";
+import ProfileTabs from "@/page/Profile/components/ProfileTabs";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
@@ -52,31 +52,11 @@ function Profile() {
       <div className="w-full h-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
         <ProfileInfo user={profileUser} />
         <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
-        {isOwnProfile && <CreatePostInput />}
         <div className="flex flex-col items-center justify-center text-gray-400 text-sm">
-          {activeTab === "threads" && (
-            <div className="w-full">
-              {loading && myPosts.length === 0 ? (
-                <div className="flex justify-center py-8">
-                  <Spinner />
-                </div>
-              ) : myPosts.length > 0 ? (
-                myPosts.map((post) => (
-                  <div
-                    key={post.id}
-                    className="p-4 border-b border-[#00000026] dark:border-[#292a2a]"
-                  >
-                    <PostItem post={post} />
-                  </div>
-                ))
-              ) : (
-                <p className="text-center py-8">No posts yet.</p>
-              )}
-            </div>
-          )}
+          {activeTab === "threads" && <ProfilePost />}
           {activeTab === "replies" && <p>No replies yet.</p>}
           {activeTab === "media" && <p>No media posts yet.</p>}
-          {activeTab === "reposts" && <p>No reposts yet.</p>}
+          {activeTab === "reposts" && <ProfileReposts />}
         </div>
       </div>
     </div>
