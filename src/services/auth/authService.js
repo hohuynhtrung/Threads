@@ -54,3 +54,31 @@ export const logoutUser = createAsyncThunk(
     }
   },
 );
+
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await http.post("auth/forgot-password", data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Forgot password failed",
+      );
+    }
+  },
+);
+
+export const resetPassoword = createAsyncThunk(
+  "auth/resetPassword",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await http.post("auth/reset-password", data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Reset password failed",
+      );
+    }
+  },
+);

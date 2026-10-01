@@ -1,5 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login, getCurrentUser, register, logoutUser } from "@/services/auth";
+import {
+  login,
+  getCurrentUser,
+  register,
+  logoutUser,
+  forgotPassword,
+  resetPassoword,
+} from "@/services/auth";
 
 const initialState = {
   currentUser: null,
@@ -9,6 +16,10 @@ const initialState = {
   registerError: null,
   registering: false,
   loggingOut: false,
+  forgotSending: false,
+  forgotError: null,
+  resetSending: false,
+  resetError: null,
 };
 
 const handleLogoutSuccess = (state) => {
@@ -105,6 +116,32 @@ export const authSlice = createSlice({
       })
       .addCase(logoutUser.rejected, (state) => {
         handleLogoutSuccess(state);
+      })
+
+      // Forgot Password
+      .addCase(forgotPassword.pending, (state) => {
+        state.forgotSending = true;
+        state.forgotError = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.forgotSending = false;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.forgotSending = false;
+        state.forgotError = action.payload;
+      })
+
+      // Reset Password
+      .addCase(resetPassoword.pending, (state) => {
+        state.resetSending = true;
+        state.resetError = null;
+      })
+      .addCase(resetPassoword.fulfilled, (state) => {
+        state.resetSending = false;
+      })
+      .addCase(resetPassoword.rejected, (state, action) => {
+        state.resetSending = false;
+        state.resetError = action.payload;
       });
   },
 });

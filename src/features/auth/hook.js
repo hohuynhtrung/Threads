@@ -1,7 +1,14 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearLoginError, resetAuth } from "@/features/auth/authSlice";
-import { getCurrentUser, login, logoutUser, register } from "@/services/auth";
+import {
+  forgotPassword,
+  getCurrentUser,
+  login,
+  logoutUser,
+  register,
+  resetPassoword,
+} from "@/services/auth";
 
 export const useFetchCurrentUser = () => {
   const dispatch = useDispatch();
@@ -60,4 +67,24 @@ export const useLogout = () => {
     resetAuth: handleResetAuth,
     loggingOut,
   };
+};
+
+export const useForgotPassword = () => {
+  const dispatch = useDispatch();
+  const forgotSending = useSelector((state) => state.auth.forgotSending);
+  const forgotError = useSelector((state) => state.auth.forgotError);
+
+  const handleForgotPassword = (data) => dispatch(forgotPassword(data));
+
+  return { handleForgotPassword, forgotSending, forgotError };
+};
+
+export const useResetPassword = () => {
+  const dispatch = useDispatch();
+  const resetSending = useSelector((state) => state.auth.resetSending);
+  const resetError = useSelector((state) => state.auth.resetError);
+
+  const handleResetPassword = (data) => dispatch(resetPassoword(data));
+
+  return { handleResetPassword, resetSending, resetError };
 };
