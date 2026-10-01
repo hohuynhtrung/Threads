@@ -39,6 +39,8 @@ import iconExpandComposer from "./iconExpandComposer.svg";
 import iconFilterPosts from "./iconFilterPosts.svg";
 import iconChevronDown from "./iconChevronDown.svg";
 import iconInformation from "./iconInformation.svg";
+import iconEye from "./iconEye.svg";
+import iconEyeHide from "./iconEyeHide.svg";
 
 const Icons = {
   iconThread,
@@ -82,6 +84,8 @@ const Icons = {
   iconFilterPosts,
   iconChevronDown,
   iconInformation,
+  iconEye,
+  iconEyeHide,
 };
 
 export default Icons;

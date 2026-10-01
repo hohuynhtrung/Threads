@@ -32,7 +32,7 @@ function AppDownloadQR({ qrUrl = "https://threads.net" }) {
     <>
       <div className="flex flex-col items-center gap-4">
         <span className="text-xs text-gray-400 dark:text-gray-500 font-normal">
-          Scan to get the app
+          Quét mã để tải ứng dụng
         </span>
 
         <div

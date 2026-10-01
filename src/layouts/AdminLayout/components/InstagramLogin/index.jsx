@@ -28,7 +28,7 @@ export default function InstagramLoginButton() {
 
           <div className="flex flex-col items-start text-left">
             <span className="text-gray-500 dark:text-gray-400 text-sm font-medium ">
-              Continue with Instagram
+              Đăng nhập với Instagram
             </span>
           </div>
         </div>

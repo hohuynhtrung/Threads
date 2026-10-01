@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { loginSchema } from "@/schemas/authSchema";
+import InputField from "@/layouts/AdminLayout/components/InputField";
 import { useLogin } from "@/features/auth/hook";
 import { login } from "@/services/auth";
 
@@ -14,6 +15,7 @@ function Login() {
     register,
     handleSubmit,
     setError,
+    control,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(loginSchema),
@@ -50,6 +52,7 @@ function Login() {
           placeholder="Số điện thoại hoặc email"
           register={register}
           error={errors.account}
+          control={control}
           autoFocus
         />
 
@@ -58,6 +61,7 @@ function Login() {
           type="password"
           placeholder="Mật khẩu"
           register={register}
+          control={control}
           error={errors.password}
         />
 
@@ -71,12 +75,12 @@ function Login() {
       </form>
 
       <div className="flex flex-col text-center mt-5">
-        <a
-          href="#"
+        <Link
+          to="/forgot-password"
           className="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 transition-colors mb-4"
         >
           Quên mật khẩu?
-        </a>
+        </Link>
 
         <span className="text-sm text-gray-500 dark:text-gray-400">
           Bạn có tài khoản chưa?{" "}

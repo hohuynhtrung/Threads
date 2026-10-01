@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "@/schemas/authSchema";
 import InputField from "@/layouts/AdminLayout/components/InputField";
 import { useRegister } from "@/features/auth/hook";
-import { register } from "@/services/auth";
+import { register as registerAction } from "@/services/auth";
 
 const translateError = (message) => {
   const map = {
@@ -19,27 +19,31 @@ const translateError = (message) => {
 function Register() {
   const navigate = useNavigate();
   const { register: doRegister, registering } = useRegister();
+
   const {
     register: registerField,
     handleSubmit,
     setError,
     formState: { errors },
+    control,
   } = useForm({
     resolver: yupResolver(registerSchema),
   });
 
   const onSubmit = async (data) => {
     const result = await doRegister(data);
-    if (register.fulfilled.match(result)) {
+
+    if (registerAction.fulfilled.match(result)) {
       navigate("/");
       return;
     }
+
     const backendErrors = result.payload;
 
     if (backendErrors && typeof backendErrors === "object") {
-      Object.entries(backendErrors).forEach(([FieldArray, messages]) => {
+      Object.entries(backendErrors).forEach(([field, messages]) => {
         const rawMessage = Array.isArray(messages) ? messages[0] : messages;
-        setError(FieldArray, {
+        setError(field, {
           type: "server",
           message: translateError(rawMessage),
         });
@@ -58,13 +62,16 @@ function Register() {
           name="username"
           placeholder="Tên người dùng"
           register={registerField}
+          control={control}
           error={errors.username}
+          autoFocus
         />
 
         <InputField
           name="email"
           type="email"
           placeholder="Email"
+          control={control}
           register={registerField}
           error={errors.email}
         />
@@ -74,6 +81,7 @@ function Register() {
           type="password"
           placeholder="Mật khẩu"
           register={registerField}
+          control={control}
           error={errors.password}
         />
 
@@ -82,24 +90,25 @@ function Register() {
           type="password"
           placeholder="Xác nhận mật khẩu"
           register={registerField}
+          control={control}
           error={errors.password_confirmation}
         />
 
         <button
           type="submit"
           disabled={registering}
-          className="w-full py-3.5 mt-1 bg-black text-white font-semibold text-sm rounded-2xl hover:bg-gray-800 active:scale-[0.99] transition-all cursor-pointer"
+          className="w-full py-3.5 mt-1 bg-black dark:bg-white dark:text-black text-white font-semibold text-sm rounded-2xl hover:bg-gray-800 dark:hover:bg-gray-200 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {registering ? "Đang đăng ký..." : "Đăng ký"}
         </button>
       </form>
 
       <div className="flex flex-col text-center mt-5">
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-gray-500 dark:text-gray-400">
           Đã có tài khoản?{" "}
           <Link
             to="/login"
-            className="text-black font-semibold hover:underline ml-1"
+            className="text-black dark:text-white font-semibold hover:underline ml-1"
           >
             Đăng nhập
           </Link>

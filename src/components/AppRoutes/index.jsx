@@ -15,6 +15,8 @@ import Profile from "@/page/Profile";
 import Insights from "@/page/Insights";
 import Saved from "@/page/Saved";
 import PostDetail from "@/page/PostDetail";
+import ForgotPass from "@/page/Auth/ForgotPass";
+import ResetPass from "@/page/Auth/ResetPass";
 
 function AppRoutes() {
   const fetching = useAuthFetching();
@@ -49,6 +51,22 @@ function AppRoutes() {
             element={
               <GuestRoute>
                 <Register />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="forgot-password"
+            element={
+              <GuestRoute>
+                <ForgotPass />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="reset-password"
+            element={
+              <GuestRoute>
+                <ResetPass />
               </GuestRoute>
             }
           />
