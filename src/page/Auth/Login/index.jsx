@@ -21,9 +21,6 @@ function Login() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(loginSchema),
-    defaultValues: {
-      account: "example1@example.com",
-    },
   });
 
   const onSubmit = async (data) => {
