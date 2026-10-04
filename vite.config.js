@@ -10,6 +10,23 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
+    // Custom plugin tự động chèn /Threads/ cho các link thiếu từ Backend email
+    {
+      name: "redirect-missing-base",
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (
+            req.url.startsWith("/verify-email") ||
+            req.url.startsWith("/reset-password")
+          ) {
+            res.writeHead(302, { Location: `/Threads${req.url}` });
+            res.end();
+            return;
+          }
+          next();
+        });
+      },
+    },
   ],
   resolve: {
     alias: {
