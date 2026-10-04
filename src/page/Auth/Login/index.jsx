@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -10,6 +10,8 @@ import { login } from "@/services/auth";
 function Login() {
   const navigate = useNavigate();
   const { login: doLogin, loggingIn } = useLogin();
+  const location = useLocation();
+  const isVerified = location.state?.verified;
 
   const {
     register,
@@ -45,6 +47,14 @@ function Login() {
       <h1 className="text-base font-bold text-center text-black dark:text-white mb-8">
         Đăng nhập bằng tài khoản Instagram
       </h1>
+
+      {isVerified && (
+        <div className="my-4 p-3.5 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-2xl text-center">
+          <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+            Đã xác minh tài khoản thành công. Vui lòng đăng nhập.
+          </p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         <InputField

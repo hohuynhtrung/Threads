@@ -8,6 +8,7 @@ import {
   logoutUser,
   register,
   resetPassoword,
+  verifyEmail,
 } from "@/services/auth";
 
 export const useFetchCurrentUser = () => {
@@ -87,4 +88,14 @@ export const useResetPassword = () => {
   const handleResetPassword = (data) => dispatch(resetPassoword(data));
 
   return { handleResetPassword, resetSending, resetError };
+};
+
+export const useVerifyEmail = () => {
+  const dispatch = useDispatch();
+  const verifyingEmail = useSelector((state) => state.auth.verifyingEmail);
+  const verifyEmailError = useSelector((state) => state.auth.verifyEmailError);
+
+  const handleVerifyEmail = (data) => dispatch(verifyEmail(data));
+
+  return { handleVerifyEmail, verifyingEmail, verifyEmailError };
 };

@@ -1,8 +1,8 @@
 import Loading from "@/components/Loading";
 import { useAuthFetching, useCurrentUser } from "@/features/auth/hook";
-import { Navigate } from "react-router";
+import { Navigate, Outlet } from "react-router";
 
-function GuestRoute({ children }) {
+function GuestRoute() {
   const currentUser = useCurrentUser();
   const fetching = useAuthFetching();
 
@@ -14,7 +14,7 @@ function GuestRoute({ children }) {
     return <Navigate to="/" replace />;
   }
 
-  return children;
+  return <Outlet />;
 }
 
 export default GuestRoute;

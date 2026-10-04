@@ -6,6 +6,7 @@ import {
   logoutUser,
   forgotPassword,
   resetPassoword,
+  verifyEmail,
 } from "@/services/auth";
 
 const initialState = {
@@ -20,6 +21,8 @@ const initialState = {
   forgotError: null,
   resetSending: false,
   resetError: null,
+  verifyingEmail: false,
+  verifyEmailError: null,
 };
 
 const handleLogoutSuccess = (state) => {
@@ -90,17 +93,6 @@ export const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.registering = false;
-
-        const resData = action.payload?.data;
-        if (resData) {
-          state.currentUser = resData.user;
-          if (resData.access_token) {
-            localStorage.setItem("accessToken", resData.access_token);
-          }
-          if (resData.refresh_token) {
-            localStorage.setItem("refreshToken", resData.refresh_token);
-          }
-        }
       })
       .addCase(register.rejected, (state, action) => {
         state.registering = false;
@@ -142,6 +134,19 @@ export const authSlice = createSlice({
       .addCase(resetPassoword.rejected, (state, action) => {
         state.resetSending = false;
         state.resetError = action.payload;
+      })
+
+      // Verify email
+      .addCase(verifyEmail.pending, (state) => {
+        state.verifyingEmail = true;
+        state.verifyEmailError = null;
+      })
+      .addCase(verifyEmail.fulfilled, (state) => {
+        state.verifyingEmail = false;
+      })
+      .addCase(verifyEmail.rejected, (state, action) => {
+        state.verifyingEmail = false;
+        state.verifyEmailError = action.payload;
       });
   },
 });

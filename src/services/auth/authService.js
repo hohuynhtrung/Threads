@@ -82,3 +82,18 @@ export const resetPassoword = createAsyncThunk(
     }
   },
 );
+
+export const verifyEmail = createAsyncThunk(
+  "auth/verifyEmail",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await http.post("auth/verify-email", data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Liên kết đã hết hạn hoặc không hợp lệ",
+      );
+    }
+  },
+);

@@ -49,7 +49,7 @@ const handleForceLogout = () => {
   localStorage.removeItem("refreshToken");
 
   if (!window.location.pathname.includes("/login")) {
-    window.location.href = "/login";
+    window.location.href = `${import.meta.env.BASE_URL}login`;
   }
 };
 
@@ -61,6 +61,12 @@ httpClient.interceptors.response.use(
     const status = error.response?.status;
 
     if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    const isVerifyEmailRequest =
+      originalRequest.url?.includes("auth/verify-email");
+    if (status === 401 && isVerifyEmailRequest) {
       return Promise.reject(error);
     }
 
