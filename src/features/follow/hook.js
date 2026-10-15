@@ -1,6 +1,11 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getFollowers } from "@/services/follow/followService";
+import {
+  followUser,
+  unfollowUser,
+  getFollowers,
+} from "@/services/follow/followService";
+import { setFollowStatus } from "@/features/follow/followSlice";
 
 export const useFetchFollowers = (userId) => {
   const dispatch = useDispatch();
@@ -15,10 +20,31 @@ export const useFetchFollowers = (userId) => {
   return { followersCount, loading };
 };
 
-export const useFollowers = () => {
-  return useSelector((state) => state.follow.followers);
-};
+export const useUserFollow = (userId) => {
+  const dispatch = useDispatch();
+  const isFollowing = useSelector(
+    (state) => state.follow.followingMap[userId] ?? false,
+  );
+  const followError = useSelector((state) => state.follow.followError);
 
-export const useFollowersCount = () => {
-  return useSelector((state) => state.follow.followersCount);
+  const toggleFollow = useCallback(() => {
+    if (!userId) return;
+
+    if (isFollowing) {
+      dispatch(unfollowUser(userId));
+    } else {
+      dispatch(followUser(userId));
+    }
+  }, [dispatch, userId, isFollowing]);
+
+  const initFollowStatus = useCallback(
+    (status) => {
+      if (userId && typeof status === "boolean") {
+        dispatch(setFollowStatus({ userId, isFollowing: status }));
+      }
+    },
+    [dispatch, userId],
+  );
+
+  return { isFollowing, toggleFollow, initFollowStatus, followError };
 };

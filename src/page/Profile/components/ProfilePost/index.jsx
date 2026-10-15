@@ -1,9 +1,10 @@
+import { useLocation } from "react-router";
+
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "@/features/auth/hook";
 import { usePosts } from "@/features/post/hook";
 import CreatePostInput from "@/layouts/DefaultLayout/components/CreatePostInput";
 import PostItem from "@/layouts/DefaultLayout/components/Posts/PostItem";
-import { useLocation } from "react-router";
 
 function ProfilePost() {
   const currentUser = useCurrentUser();

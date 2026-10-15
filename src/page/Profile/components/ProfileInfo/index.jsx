@@ -1,13 +1,24 @@
+import { useEffect } from "react";
+import { Link } from "react-router";
+
 import Icons from "@/assets/icons";
 import Images from "@/assets/images";
-import { useFetchFollowers } from "@/features/follow/hook";
-import { Link } from "react-router";
+import { useFetchFollowers, useUserFollow } from "@/features/follow/hook";
 
 function ProfileInfo({ user, isOwnProfile = false }) {
   if (!user) return null;
 
   const userId = user.id;
   const { followersCount, loading } = useFetchFollowers(userId);
+  const { isFollowing, toggleFollow, initFollowStatus, followError } =
+    useUserFollow(userId);
+
+  useEffect(() => {
+    const followStatus = user?.is_following;
+    if (typeof followStatus === "boolean") {
+      initFollowStatus(followStatus);
+    }
+  }, [user?.id, user?.is_following, initFollowStatus]);
 
   return (
     <div className="p-4">
@@ -97,13 +108,25 @@ function ProfileInfo({ user, isOwnProfile = false }) {
         </div>
       ) : (
         <div className="flex w-full gap-2.5">
-          <button className="w-full flex justify-center mt-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-xl font-semibold text-sm hover:opacity-80 active:scale-[0.99] transition cursor-pointer">
-            Follow
+          <button
+            onClick={toggleFollow}
+            className={`w-full flex justify-center mt-4 py-2 rounded-xl font-semibold text-sm active:scale-[0.99] transition cursor-pointer ${
+              isFollowing
+                ? "border border-gray-300 dark:border-[#2d2d2d] hover:bg-gray-50 dark:hover:bg-[#1e1e1e]"
+                : "bg-black dark:bg-white text-white dark:text-black hover:opacity-80"
+            }`}
+          >
+            {isFollowing ? "Following" : "Follow"}
           </button>
           <button className="w-full flex justify-center mt-4 py-2 border border-gray-300 dark:border-[#2d2d2d] rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1e1e1e] active:scale-[0.99] transition cursor-pointer">
             Message
           </button>
         </div>
+      )}
+      {followError && (
+        <p className="mt-2 text-sm text-red-600" role="alert">
+          {followError}
+        </p>
       )}
     </div>
   );

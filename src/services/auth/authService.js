@@ -35,9 +35,7 @@ export const register = createAsyncThunk(
       return response;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.errors ||
-          error.response?.data?.message ||
-          "Register failed",
+        error.response?.data?.message || "Register failed",
       );
     }
   },

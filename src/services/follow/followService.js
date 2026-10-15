@@ -1,6 +1,21 @@
 import http from "@/utils/http";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+const getErrorMessage = (error, fallback) => {
+  const responseMessage =
+    error.response?.data?.message || error.response?.data?.errors;
+
+  if (typeof responseMessage === "string") {
+    return responseMessage;
+  }
+
+  if (Array.isArray(responseMessage)) {
+    return responseMessage.join(", ");
+  }
+
+  return typeof error.message === "string" ? error.message : fallback;
+};
+
 export const getFollowers = createAsyncThunk(
   "follow/getFollowers",
   async (userId, { rejectWithValue }) => {
@@ -9,7 +24,7 @@ export const getFollowers = createAsyncThunk(
       return response;
     } catch (error) {
       return rejectWithValue(
-        error.response.message || "Unable to fetch followers",
+        getErrorMessage(error, "Unable to fetch followers"),
       );
     }
   },
@@ -19,10 +34,28 @@ export const followUser = createAsyncThunk(
   "follow/followUser",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await http.post(`/users/${userId}/follow`);
-      return response;
+      const response = await http.post(`/users/${userId}/follow`, {});
+      return { userId, data: response };
     } catch (error) {
-      return rejectWithValue(error.response.message || "Follow user faild");
+      return rejectWithValue({
+        userId,
+        message: getErrorMessage(error, "Unable to follow user"),
+      });
+    }
+  },
+);
+
+export const unfollowUser = createAsyncThunk(
+  "follow/unfollowUser",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await http.del(`/users/${userId}/follow`);
+      return { userId, data: response };
+    } catch (error) {
+      return rejectWithValue({
+        userId,
+        message: getErrorMessage(error, "Unable to unfollow user"),
+      });
     }
   },
 );

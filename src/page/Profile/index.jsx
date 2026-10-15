@@ -1,13 +1,13 @@
 import Icons from "@/assets/icons";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+
 import { useCurrentUser, useFetchCurrentUser } from "@/features/auth/hook";
 import { usePosts } from "@/features/post/hook";
-import CreatePostInput from "@/layouts/DefaultLayout/components/CreatePostInput";
 import ProfileInfo from "@/page/Profile/components/ProfileInfo";
 import ProfilePost from "@/page/Profile/components/ProfilePost";
 import ProfileReposts from "@/page/Profile/components/ProfileReposts";
 import ProfileTabs from "@/page/Profile/components/ProfileTabs";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 function Profile() {
   useFetchCurrentUser();
