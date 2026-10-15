@@ -1,8 +1,9 @@
 import Icons from "@/assets/icons";
 import Images from "@/assets/images";
 import { useFetchFollowers } from "@/features/follow/hook";
+import { Link } from "react-router";
 
-function ProfileInfo({ user }) {
+function ProfileInfo({ user, isOwnProfile = false }) {
   if (!user) return null;
 
   const userId = user.id;
@@ -45,27 +46,65 @@ function ProfileInfo({ user }) {
             ? "..."
             : `${followersCount} ${followersCount > 1 ? "followers" : "follower"}`}
         </span>
-        <div className="flex items-center gap-3">
-          <button className="hover:opacity-70 transition cursor-pointer">
-            <img
-              src={Icons.iconInsights}
-              alt="Insights"
-              className="w-5 h-5 dark:invert"
-            />
-          </button>
-          <button className="hover:opacity-70 transition cursor-pointer">
-            <img
-              src={Icons.iconInstagram}
-              alt="Instagram"
-              className="w-5 h-5 dark:invert"
-            />
-          </button>
-        </div>
+
+        {isOwnProfile ? (
+          <div className="flex items-center gap-3">
+            <button className="hover:opacity-70 transition cursor-pointer">
+              <img
+                src={Icons.iconInsights}
+                alt="Insights"
+                title="Insights"
+                className="w-5 h-5 dark:invert"
+              />
+            </button>
+            <button className="hover:opacity-70 transition cursor-pointer">
+              <img
+                src={Icons.iconInstagram}
+                alt="Instagram"
+                title="Instagram"
+                className="w-5 h-5 dark:invert"
+              />
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <button className="hover:opacity-70 transition cursor-pointer">
+              <img src={Icons.iconNotifyBell} className="w-5 h-5 dark:invert" />
+            </button>
+            <button className="hover:opacity-70 transition cursor-pointer">
+              <img
+                src={Icons.iconMorePost}
+                alt="More"
+                title="More"
+                className="w-5 h-5 dark:invert"
+              />
+            </button>
+          </div>
+        )}
       </div>
 
-      <button className="w-full mt-4 py-2 border border-gray-300 dark:border-[#2d2d2d] rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1e1e1e] active:scale-[0.99] transition cursor-pointer">
-        Edit profile
-      </button>
+      {isOwnProfile ? (
+        <div className="flex w-full gap-2.5">
+          <Link className="w-full flex justify-center mt-4 py-2 border border-gray-300 dark:border-[#2d2d2d] rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1e1e1e] active:scale-[0.99] transition cursor-pointer">
+            Edit profile
+          </Link>
+          <Link
+            to="/insights"
+            className="w-full flex justify-center mt-4 py-2 border border-gray-300 dark:border-[#2d2d2d] rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1e1e1e] active:scale-[0.99] transition cursor-pointer"
+          >
+            View insights
+          </Link>
+        </div>
+      ) : (
+        <div className="flex w-full gap-2.5">
+          <button className="w-full flex justify-center mt-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-xl font-semibold text-sm hover:opacity-80 active:scale-[0.99] transition cursor-pointer">
+            Follow
+          </button>
+          <button className="w-full flex justify-center mt-4 py-2 border border-gray-300 dark:border-[#2d2d2d] rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1e1e1e] active:scale-[0.99] transition cursor-pointer">
+            Message
+          </button>
+        </div>
+      )}
     </div>
   );
 }

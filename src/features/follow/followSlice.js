@@ -1,4 +1,4 @@
-import { getFollowers } from "@/services/follow/followService";
+import { followUser, getFollowers } from "@/services/follow/followService";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -14,6 +14,7 @@ export const followSilce = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // get follow user
       .addCase(getFollowers.pending, (state) => {
         state.loading = true;
       })
@@ -23,6 +24,17 @@ export const followSilce = createSlice({
       })
       .addCase(getFollowers.rejected, (state, action) => {
         ((state.loading = false), (state.error = action.payload));
+      })
+
+      //post follow user
+      .addCase(followUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(followUser.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(followUser.rejected, (state) => {
+        state.error = action.payload;
       });
   },
 });

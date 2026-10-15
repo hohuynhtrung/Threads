@@ -7,11 +7,12 @@ import ProfilePost from "@/page/Profile/components/ProfilePost";
 import ProfileReposts from "@/page/Profile/components/ProfileReposts";
 import ProfileTabs from "@/page/Profile/components/ProfileTabs";
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 function Profile() {
   useFetchCurrentUser();
 
+  const navigate = useNavigate();
   const currentUser = useCurrentUser();
   const location = useLocation();
   const { username } = useParams();
@@ -34,9 +35,21 @@ function Profile() {
   return (
     <div className="flex flex-col w-160 mt-5">
       <div className="flex max-w-160 items-center justify-between w-full px-4">
-        <h1 className="text-black dark:text-white font-semibold text-[20px]">
-          {profileUser.name}
-        </h1>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 hover:bg-gray-100 dark:hover:bg-[#292a2a] rounded-full transition cursor-pointer"
+          >
+            <img
+              src={Icons.iconBack}
+              alt="Back"
+              className="w-5 h-5 dark:invert"
+            />
+          </button>
+          <h1 className="text-black dark:text-white font-semibold text-[20px]">
+            {profileUser.name}
+          </h1>
+        </div>
         {isOwnProfile ? (
           <button className="hover:opacity-70 transition cursor-pointer">
             <img
@@ -50,7 +63,7 @@ function Profile() {
         )}
       </div>
       <div className="w-full h-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
-        <ProfileInfo user={profileUser} />
+        <ProfileInfo user={profileUser} isOwnProfile={isOwnProfile} />
         <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
         <div className="flex flex-col items-center justify-center text-gray-400 text-sm">
           {activeTab === "threads" && <ProfilePost />}

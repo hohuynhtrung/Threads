@@ -14,3 +14,15 @@ export const getFollowers = createAsyncThunk(
     }
   },
 );
+
+export const followUser = createAsyncThunk(
+  "follow/followUser",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await http.post(`/users/${userId}/follow`);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.message || "Follow user faild");
+    }
+  },
+);

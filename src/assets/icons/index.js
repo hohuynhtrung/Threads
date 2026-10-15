@@ -41,6 +41,7 @@ import iconChevronDown from "./iconChevronDown.svg";
 import iconInformation from "./iconInformation.svg";
 import iconEye from "./iconEye.svg";
 import iconEyeHide from "./iconEyeHide.svg";
+import iconNotifyBell from "./iconNotifyBell.svg";
 
 const Icons = {
   iconThread,
@@ -86,6 +87,7 @@ const Icons = {
   iconInformation,
   iconEye,
   iconEyeHide,
+  iconNotifyBell,
 };
 
 export default Icons;
