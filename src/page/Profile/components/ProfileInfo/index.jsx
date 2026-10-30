@@ -14,11 +14,11 @@ function ProfileInfo({ user, isOwnProfile = false }) {
     useUserFollow(userId);
 
   useEffect(() => {
-    const followStatus = user?.is_following;
+    const followStatus = user?.is_followed_by_auth;
     if (typeof followStatus === "boolean") {
       initFollowStatus(followStatus);
     }
-  }, [user?.id, user?.is_following, initFollowStatus]);
+  }, [user?.id, user?.is_followed_by_auth, initFollowStatus]);
 
   return (
     <div className="p-4">
