@@ -1,7 +1,9 @@
 import { useNavigate, useParams } from "react-router";
+import { useSelector } from "react-redux";
 import { formatTimeAgo } from "@/layouts/DefaultLayout/helper/formatTimeAgo";
 import PostActions from "@/layouts/DefaultLayout/components/Posts/PostActions";
 import ReplyPreviewList from "@/layouts/DefaultLayout/components/Posts/ReplyPreviewList";
+import MorePostMenu from "@/layouts/DefaultLayout/components/Posts/MorePostMenu";
 
 import Images from "@/assets/images";
 
@@ -13,6 +15,10 @@ function PostItem({
 }) {
   const navigate = useNavigate();
   const params = useParams();
+
+  const currentUser = useSelector((state) => state.auth?.currentUser);
+  const isOwnPost =
+    currentUser?.id && post?.user?.id && currentUser.id === post.user.id;
 
   const isMain = variant === "main";
   const isAncestor = variant === "ancestor";
@@ -65,16 +71,20 @@ function PostItem({
         </div>
 
         <div className="w-full">
-          <button
-            type="button"
-            onClick={handleUserProfile}
-            className={`font-semibold text-black dark:text-[#e8eaeb] ${nameSize} leading-tight text-left cursor-pointer hover:underline`}
-          >
-            {post?.user?.name}
-            <span className="text-[14px] font-normal text-gray-400 dark:text-[#cccccc] ml-2">
-              {formatTimeAgo(post?.created_at)}
-            </span>
-          </button>
+          <div className="flex justify-between items-center">
+            <button
+              type="button"
+              onClick={handleUserProfile}
+              className={`font-semibold text-black dark:text-[#e8eaeb] ${nameSize} leading-tight text-left cursor-pointer hover:underline`}
+            >
+              {post?.user?.name}
+              <span className="text-[14px] font-normal text-gray-400 dark:text-[#cccccc] ml-2">
+                {formatTimeAgo(post?.created_at)}
+              </span>
+            </button>
+
+            <MorePostMenu post={post} isOwnPost={isOwnPost} />
+          </div>
 
           {/* Reply preview khi chưa có ancestor-chain đầy đủ từ API */}
           {!isAncestor && post?.reply_to_username && (

@@ -42,6 +42,15 @@ import iconInformation from "./iconInformation.svg";
 import iconEye from "./iconEye.svg";
 import iconEyeHide from "./iconEyeHide.svg";
 import iconNotifyBell from "./iconNotifyBell.svg";
+import iconArchive from "./iconArchive.svg";
+import iconCopyLink from "./iconCopyLink.svg";
+import iconDelete from "./iconDelete.svg";
+import iconEmbebCode from "./iconEmbebCode.svg";
+import iconHideLike from "./iconHideLike.svg";
+import iconBlock from "./iconBlock.svg";
+import iconMute from "./iconMute.svg";
+import iconReport from "./iconReport.svg";
+import iconRestrict from "./iconRestrict.svg";
 
 const Icons = {
   iconThread,
@@ -88,6 +97,15 @@ const Icons = {
   iconEye,
   iconEyeHide,
   iconNotifyBell,
+  iconArchive,
+  iconCopyLink,
+  iconDelete,
+  iconEmbebCode,
+  iconHideLike,
+  iconBlock,
+  iconMute,
+  iconReport,
+  iconRestrict,
 };
 
 export default Icons;
