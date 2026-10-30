@@ -2,10 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Threads</title>
+
+    <script>
+      (function () {
+        const { pathname, search, hash } = window.location;
+        const basePath = "/Threads/";
+
+        if (search.startsWith("?/")) {
+          const parts = search
+            .slice(2)
+            .split("&")
+            .map((part) => part.replace(/~and~/g, "&"));
+
+          const route = parts.shift() || "";
+          const query = parts.length ? "?" + parts.join("&") : "";
+
+          const restoredPath = basePath + route + query + hash;
+
+          window.history.replaceState(null, "", restoredPath);
+        }
+      })();
+    </script>
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>

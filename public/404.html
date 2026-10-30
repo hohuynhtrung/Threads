@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Threads</title>
+    <script>
+      (function () {
+        const basePath = "/Threads/";
+        const { pathname, search, hash } = window.location;
+
+        if (pathname.startsWith(basePath)) {
+          const route = pathname.slice(basePath.length);
+          const encodedRoute = route.replace(/&/g, "~and~");
+          const encodedQuery = search
+            ? "&" + search.slice(1).replace(/&/g, "~and~")
+            : "";
+
+          window.location.replace(
+            basePath + "?/" + encodedRoute + encodedQuery + hash,
+          );
+        }
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
