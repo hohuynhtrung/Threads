@@ -3,11 +3,14 @@ import {
   followUser,
   unfollowUser,
   getFollowers,
+  getFollowings,
 } from "@/services/follow/followService";
 
 const initialState = {
   followers: [],
   followersCount: 0,
+  followings: [],
+  followingCount: 0,
   followingMap: {},
   loading: false,
   error: null,
@@ -36,6 +39,21 @@ export const followSilce = createSlice({
           action.payload.pagination?.total ?? state.followersCount;
       })
       .addCase(getFollowers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Get Followings
+      .addCase(getFollowings.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getFollowings.fulfilled, (state, action) => {
+        state.loading = false;
+        state.followings = action.payload.data || [];
+        state.followingsCount =
+          action.payload.pagination?.total ?? state.followingsCount;
+      })
+      .addCase(getFollowings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { useEffect } from "react";
 import { Link } from "react-router";
 
 import Icons from "@/assets/icons";
 import Images from "@/assets/images";
 import { useFetchFollowers, useUserFollow } from "@/features/follow/hook";
+import FollowersModal from "@/page/Profile/components/FollowersModel";
 
 function ProfileInfo({ user, isOwnProfile = false }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   if (!user) return null;
 
   const userId = user.id;
@@ -52,7 +56,10 @@ function ProfileInfo({ user, isOwnProfile = false }) {
       )}
 
       <div className="flex items-center justify-between mt-4">
-        <span className="text-sm font-medium opacity-40 hover:underline cursor-pointer">
+        <span
+          onClick={() => setIsModalOpen(true)}
+          className="text-sm font-medium opacity-60 hover:opacity-100 hover:underline cursor-pointer"
+        >
           {loading
             ? "..."
             : `${followersCount} ${followersCount > 1 ? "followers" : "follower"}`}
@@ -128,6 +135,12 @@ function ProfileInfo({ user, isOwnProfile = false }) {
           {followError}
         </p>
       )}
+
+      <FollowersModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        userId={userId}
+      />
     </div>
   );
 }

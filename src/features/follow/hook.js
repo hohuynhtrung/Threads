@@ -4,6 +4,7 @@ import {
   followUser,
   unfollowUser,
   getFollowers,
+  getFollowings,
 } from "@/services/follow/followService";
 import { setFollowStatus } from "@/features/follow/followSlice";
 
@@ -18,6 +19,19 @@ export const useFetchFollowers = (userId) => {
   }, [dispatch, userId]);
 
   return { followersCount, loading };
+};
+
+export const useFetchFollowings = (userId) => {
+  const dispatch = useDispatch();
+  const { followingsCount, loading } = useSelector((state) => state.follow);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(getFollowings(userId));
+    }
+  }, [dispatch, userId]);
+
+  return { followingsCount, loading };
 };
 
 export const useUserFollow = (userId) => {

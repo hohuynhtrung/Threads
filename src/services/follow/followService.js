@@ -30,6 +30,20 @@ export const getFollowers = createAsyncThunk(
   },
 );
 
+export const getFollowings = createAsyncThunk(
+  "follow/getFollowings",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await http.get(`/users/${userId}/followings`);
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        getErrorMessage(error, "Unable to fetch followings"),
+      );
+    }
+  },
+);
+
 export const followUser = createAsyncThunk(
   "follow/followUser",
   async (userId, { rejectWithValue }) => {
