@@ -1,9 +1,11 @@
 import { useNavigate, useParams } from "react-router";
 import { useSelector } from "react-redux";
+
 import { formatTimeAgo } from "@/layouts/DefaultLayout/helper/formatTimeAgo";
 import PostActions from "@/layouts/DefaultLayout/components/Posts/PostActions";
 import ReplyPreviewList from "@/layouts/DefaultLayout/components/Posts/ReplyPreviewList";
 import MorePostMenu from "@/layouts/DefaultLayout/components/Posts/MorePostMenu";
+import { usePosts } from "@/features/post/hook";
 
 import Images from "@/assets/images";
 
@@ -19,6 +21,8 @@ function PostItem({
   const currentUser = useSelector((state) => state.auth?.currentUser);
   const isOwnPost =
     currentUser?.id && post?.user?.id && currentUser.id === post.user.id;
+
+  const { deletePost } = usePosts(currentUser);
 
   const isMain = variant === "main";
   const isAncestor = variant === "ancestor";
@@ -83,7 +87,11 @@ function PostItem({
               </span>
             </button>
 
-            <MorePostMenu post={post} isOwnPost={isOwnPost} />
+            <MorePostMenu
+              post={post}
+              isOwnPost={isOwnPost}
+              onDelete={deletePost}
+            />
           </div>
 
           {/* Reply preview khi chưa có ancestor-chain đầy đủ từ API */}

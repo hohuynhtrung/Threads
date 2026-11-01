@@ -115,6 +115,19 @@ export const getUserReposts = createAsyncThunk(
   },
 );
 
+// POST Delete post
+export const deletePost = createAsyncThunk(
+  "posts/deletePost",
+  async (postId, { rejectWithValue }) => {
+    try {
+      const response = await http.del(`/posts/${postId}`);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.message || "Delete post failed");
+    }
+  },
+);
+
 export const fetchRepliesPreview = (
   postId,
   { page = 1, per_page = 2 } = {},

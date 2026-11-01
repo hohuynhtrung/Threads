@@ -13,6 +13,7 @@ import {
   getUserReposts,
   likePost,
   repostPost,
+  deletePost,
 } from "@/services/post/postService";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -89,6 +90,11 @@ export const usePosts = (currentUserId) => {
     () => dispatch(clearReposts()),
     [dispatch],
   );
+
+  const handleDeletePost = useCallback(
+    (postId) => dispatch(deletePost(postId)),
+    [dispatch],
+  );
   return {
     posts,
     myPosts,
@@ -115,5 +121,6 @@ export const usePosts = (currentUserId) => {
     clearReposts: handleClearReposts,
     createReply: handleCreateReply,
     repostPost: handleRepostPost,
+    deletePost: handleDeletePost,
   };
 };

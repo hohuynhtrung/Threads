@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createPost,
   createReply,
+  deletePost,
   getPost,
   getPostById,
   getReplies,
@@ -172,7 +173,7 @@ export const postSlice = createSlice({
         optimisticRepostToggle(listPost);
         optimisticRepostToggle(detailPost);
       })
-      .addCase(repostPost.fulfilled, (state, action) => {
+      .addCase(repostPost.fulfilled, (state) => {
         // Response trả về post repost mới, không có count của post gốc
         // Optimistic update từ pending đã đủ, không cần làm gì thêm
       })
@@ -239,6 +240,28 @@ export const postSlice = createSlice({
       })
       .addCase(createReply.rejected, (state, action) => {
         state.loadingReplies = false;
+        state.error = action.payload;
+      })
+
+      // Delete post
+      .addCase(deletePost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.loading = false;
+        const deletedPostId = action.meta.arg;
+
+        // Lọc bỏ bài viết đã xóa khỏi danh sách list
+        state.list = state.list.filter((post) => post.id !== deletedPostId);
+
+        // Nếu bài viết đang xem chi tiết chính là bài bị xóa thì reset currentPost về null
+        if (state.currentPost?.id === deletedPostId) {
+          state.currentPost = null;
+        }
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },
