@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import Icons from "@/assets/icons";
 import DeleteConfirmModal from "@/layouts/DefaultLayout/components/Posts/DeleteConfirmModel";
+import EmbedModal from "@/layouts/DefaultLayout/components/Posts/EmbebModel";
 
 function MorePostMenu({ post, isOwnPost = false, onDelete }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isEmbedOpen, setIsEmbedOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -26,10 +29,29 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
     setIsOpen((prev) => !prev);
   };
 
+  const handleCopyLink = (e) => {
+    e.stopPropagation();
+    setIsOpen(false);
+
+    const postLink = `${window.location.origin}/post/${post.id}`;
+    navigator.clipboard.writeText(postLink);
+
+    setToastMessage("Đã sao chép");
+    setTimeout(() => {
+      setToastMessage("");
+    }, 2000);
+  };
+
+  const handleOpenEmbed = (e) => {
+    e.stopPropagation();
+    setIsOpen(false);
+    setIsEmbedOpen(true);
+  };
+
   const handleDeleteClick = (e) => {
     e.stopPropagation();
-    setIsOpen(false); // Đóng dropdown menu 3 chấm
-    setIsConfirmOpen(true); // Mở modal xác nhận xóa lên
+    setIsOpen(false);
+    setIsConfirmOpen(true);
   };
 
   const handleConfirmDelete = async (e) => {
@@ -38,7 +60,7 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
       if (onDelete) {
         await onDelete(post.id);
       }
-      setIsConfirmOpen(false); // Đóng modal sau khi xóa thành công
+      setIsConfirmOpen(false);
     } catch (error) {
       console.error("Xóa bài viết thất bại:", error);
     }
@@ -47,7 +69,6 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
   return (
     <>
       <div className="relative inline-block text-left" ref={menuRef}>
-        {/* Nút bấm icon 3 chấm */}
         <button
           type="button"
           onClick={handleToggleMenu}
@@ -86,11 +107,7 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
 
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigator.clipboard.writeText(window.location.href);
-                    setIsOpen(false);
-                  }}
+                  onClick={handleCopyLink}
                   className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-[#262626] transition cursor-pointer"
                 >
                   <span>Copy link</span>
@@ -103,10 +120,7 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
 
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsOpen(false);
-                  }}
+                  onClick={handleOpenEmbed}
                   className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-[#262626] transition cursor-pointer"
                 >
                   <span>Get embed code</span>
@@ -197,7 +211,6 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
 
                 <div className="h-px bg-gray-100 dark:bg-[#2d2d2d] my-1" />
 
-                {/* NÚT DELETE KÍCH HOẠT MODAL */}
                 <button
                   type="button"
                   onClick={handleDeleteClick}
@@ -216,11 +229,7 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
               <>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigator.clipboard.writeText(window.location.href);
-                    setIsOpen(false);
-                  }}
+                  onClick={handleCopyLink}
                   className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-[#262626] transition cursor-pointer"
                 >
                   <span>Copy link</span>
@@ -233,10 +242,7 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
 
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsOpen(false);
-                  }}
+                  onClick={handleOpenEmbed}
                   className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-[#262626] transition cursor-pointer"
                 >
                   <span>Get embed code</span>
@@ -378,12 +384,26 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
         )}
       </div>
 
-      {/* --- GỌI COMPONENT MODAL XÁC NHẬN XÓA TỪ FILE KHÁC --- */}
+      {/* --- MODAL XÁC NHẬN XÓA --- */}
       <DeleteConfirmModal
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleConfirmDelete}
       />
+
+      {/* --- MODAL EMBED CODE --- */}
+      <EmbedModal
+        isOpen={isEmbedOpen}
+        onClose={() => setIsEmbedOpen(false)}
+        post={post}
+      />
+
+      {/* --- TOAST THÔNG BÁO "ĐÃ SAO CHÉP" --- */}
+      {toastMessage && (
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-xl text-sm font-semibold shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-200">
+          {toastMessage}
+        </div>
+      )}
     </>
   );
 }
