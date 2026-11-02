@@ -75,6 +75,11 @@ function MoreMenu() {
               return (
                 <DropdownMenuItem
                   key={item.id}
+                  onSelect={
+                    item.id === "settings"
+                      ? () => navigate("/settings")
+                      : undefined
+                  }
                   onClick={(e) => {
                     if (item.hasSubmenu) {
                       e.preventDefault();

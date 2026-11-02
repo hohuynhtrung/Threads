@@ -11,6 +11,7 @@ import Profile from "@/page/Profile";
 import Insights from "@/page/Insights";
 import Saved from "@/page/Saved";
 import PostDetail from "@/page/PostDetail";
+import Setting from "@/page/Setting";
 
 import Login from "@/page/Auth/Login";
 import Register from "@/page/Auth/Register";
@@ -42,6 +43,7 @@ function AppRoutes() {
           <Route path=":username" element={<Profile />} />
           <Route path="insights" element={<Insights />} />
           <Route path="saved" element={<Saved />} />
+          <Route path="settings" element={<Setting />} />
         </Route>
 
         {/* Auth Routes */}

@@ -51,6 +51,17 @@ import iconBlock from "./iconBlock.svg";
 import iconMute from "./iconMute.svg";
 import iconReport from "./iconReport.svg";
 import iconRestrict from "./iconRestrict.svg";
+import iconContentPre from "./iconContentPre.svg";
+import iconHelp from "./iconHelp.svg";
+import iconHomeUser from "./iconHomeUser.svg";
+import iconMetaAcc from "./iconMetaAcc.svg";
+import iconUserOnl from "./iconUserOnl.svg";
+import iconPrivacy from "./iconPrivacy.svg";
+import iconPolitical from "./iconPolitical.svg";
+import iconSensitive from "./iconSensitive.svg";
+import iconTagMen from "./iconTagMen.svg";
+import iconYourAlgo from "./iconYourAlgo.svg";
+import iconHideBell from "./iconHideBell.svg";
 
 const Icons = {
   iconThread,
@@ -106,6 +117,18 @@ const Icons = {
   iconMute,
   iconReport,
   iconRestrict,
+  iconRestrict,
+  iconContentPre,
+  iconHelp,
+  iconHomeUser,
+  iconMetaAcc,
+  iconUserOnl,
+  iconPrivacy,
+  iconPolitical,
+  iconSensitive,
+  iconTagMen,
+  iconYourAlgo,
+  iconHideBell,
 };
 
 export default Icons;
