@@ -1,11 +1,13 @@
 import { useNavigate, useParams } from "react-router";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 import { formatTimeAgo } from "@/layouts/DefaultLayout/helper/formatTimeAgo";
 import PostActions from "@/layouts/DefaultLayout/components/Posts/PostActions";
 import ReplyPreviewList from "@/layouts/DefaultLayout/components/Posts/ReplyPreviewList";
 import MorePostMenu from "@/layouts/DefaultLayout/components/Posts/MorePostMenu";
 import { usePosts } from "@/features/post/hook";
+import { useUserMute } from "@/features/action/hook";
 
 import Images from "@/assets/images";
 
@@ -27,6 +29,39 @@ function PostItem({
   const isMain = variant === "main";
   const isAncestor = variant === "ancestor";
 
+  const userId = post?.user?.id ? String(post.user.id) : null;
+  const username = post?.user?.username || post?.user?.name;
+
+  const { isMuted, toggleMute, initMuteStatus } = useUserMute(userId);
+
+  useEffect(() => {
+    const muteStatus = post?.user?.is_muted_by_auth;
+    if (typeof muteStatus === "boolean" && userId) {
+      initMuteStatus(muteStatus);
+    }
+  }, [post?.user?.is_muted_by_auth, userId, initMuteStatus]);
+
+  if (isMuted) {
+    return (
+      <div className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-[#1a1a1a] border border-gray-100 dark:border-[#2d2d2d] rounded-2xl text-sm text-gray-500 dark:text-gray-400 my-2">
+        <span>
+          Posts from <span className="font-semibold">{username}</span> are
+          muted. You can manage who you mute in settings.
+        </span>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleMute();
+          }}
+          className="font-semibold text-black dark:text-white hover:opacity-70 transition cursor-pointer ml-4 shrink-0"
+        >
+          Undo
+        </button>
+      </div>
+    );
+  }
+
   const handlePostDetail = () => {
     if (params.id === String(post.id)) return;
     navigate(`/post/${post.id}`);
@@ -35,10 +70,10 @@ function PostItem({
   const handleUserProfile = (event) => {
     event.stopPropagation();
 
-    const username = post?.user?.username;
-    if (!username) return;
+    const postUsername = post?.user?.username;
+    if (!postUsername) return;
 
-    navigate(`/@${username}`, { state: { user: post.user } });
+    navigate(`/@${postUsername}`, { state: { user: post.user } });
   };
 
   const avatarSize = isMain ? "w-12 h-12" : "w-10 h-10";
@@ -94,7 +129,7 @@ function PostItem({
             />
           </div>
 
-          {/* Reply preview khi chưa có ancestor-chain đầy đủ từ API */}
+          {/* Reply preview */}
           {!isAncestor && post?.reply_to_username && (
             <p className="text-[13px] text-gray-400 dark:text-gray-500">
               Trả lời{" "}

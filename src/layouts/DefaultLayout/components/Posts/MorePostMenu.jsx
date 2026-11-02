@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Icons from "@/assets/icons";
 import DeleteConfirmModal from "@/layouts/DefaultLayout/components/Posts/DeleteConfirmModel";
 import EmbedModal from "@/layouts/DefaultLayout/components/Posts/EmbebModel";
+import { useUserMute } from "@/features/action/hook";
 
 function MorePostMenu({ post, isOwnPost = false, onDelete }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +10,9 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
   const [isEmbedOpen, setIsEmbedOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const menuRef = useRef(null);
+  const user = post?.user;
+  const userId = user?.id ? String(post.user.id) : null;
+  const { isMuted, toggleMute, initMuteStatus } = useUserMute(userId);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -33,7 +37,7 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
     e.stopPropagation();
     setIsOpen(false);
 
-    const postLink = `${window.location.origin}/post/${post.id}`;
+    const postLink = `${window.location.origin}/Threads/post/${post.id}`;
     navigator.clipboard.writeText(postLink);
 
     setToastMessage("Đã sao chép");
@@ -64,6 +68,18 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
     } catch (error) {
       console.error("Xóa bài viết thất bại:", error);
     }
+  };
+
+  useEffect(() => {
+    if (user && typeof user.is_muted_by_auth === "boolean") {
+      initMuteStatus(user.is_muted_by_auth);
+    }
+  }, [user?.is_muted_by_auth, initMuteStatus]);
+
+  const handleToggleMute = (e) => {
+    e.stopPropagation();
+    toggleMute();
+    setIsOpen(false);
   };
 
   return (
@@ -321,13 +337,10 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
 
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsOpen(false);
-                  }}
+                  onClick={handleToggleMute}
                   className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-[#262626] transition cursor-pointer"
                 >
-                  <span>Mute</span>
+                  <span>{isMuted ? "Unmute" : "Mute"}</span>
                   <img src={Icons.iconMute} title="Mute" className="w-5 h-5" />
                 </button>
 
