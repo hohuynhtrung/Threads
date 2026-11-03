@@ -1,17 +1,19 @@
-import { useEffect, useRef, useMemo } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useParams, useNavigate, useLocation } from "react-router";
 import { usePosts } from "@/features/post/hook";
 import PostItem from "@/layouts/DefaultLayout/components/Posts/PostItem";
 import { Spinner } from "@/components/ui/spinner";
 import Icons from "@/assets/icons";
 import Footer from "@/layouts/components/Footer";
-import RepilesInput from "@/page/PostDetail/components/RepilesInput";
+import RepliesInput from "@/page/PostDetail/components/RepilesInput";
 
 function PostDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const replyInputRef = useRef(null);
+
+  const [sortBy, setSortBy] = useState("top");
 
   const {
     currentPost,
@@ -33,7 +35,7 @@ function PostDetail() {
       clearCurrentPost();
       clearReplies();
     };
-  }, [id, fetchPostById, clearCurrentPost]);
+  }, [id, fetchPostById, clearCurrentPost, clearReplies]);
 
   useEffect(() => {
     if (location.state?.focusReply) {
@@ -41,9 +43,6 @@ function PostDetail() {
     }
   }, [location.state, currentPost]);
 
-  // Chuỗi cha (ancestors) từ gốc -> ngay trên currentPost.
-  // Giả định API trả currentPost.parent (1 cấp), lồng nhau nếu backend include đệ quy.
-  // Nếu backend trả sẵn mảng currentPost.ancestors thì dùng thẳng mảng đó thay đoạn này.
   const ancestors = useMemo(() => {
     const chain = [];
     let node = currentPost?.parent;
@@ -53,6 +52,23 @@ function PostDetail() {
     }
     return chain;
   }, [currentPost]);
+
+  const sortedReplies = useMemo(() => {
+    if (!replies || replies.length === 0) return [];
+    const list = [...replies];
+
+    if (sortBy === "recent") {
+      return list.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      );
+    }
+
+    return list.sort((a, b) => {
+      const scoreA = (a.likes_count || 0) * 2 + (a.replies_count || 0);
+      const scoreB = (b.likes_count || 0) * 2 + (b.replies_count || 0);
+      return scoreB - scoreA;
+    });
+  }, [replies, sortBy]);
 
   const handleReplySubmit = async (content) => {
     if (!content.trim()) return;
@@ -70,6 +86,7 @@ function PostDetail() {
     <div className="flex flex-col w-160 mt-5 mx-auto">
       <div className="flex items-center gap-4 px-4 mb-4">
         <button
+          type="button"
           onClick={() => navigate(-1)}
           className="p-2 hover:bg-gray-100 dark:hover:bg-[#292a2a] rounded-full transition cursor-pointer"
         >
@@ -108,16 +125,17 @@ function PostDetail() {
         )}
 
         <div className="p-4 border-b border-[#00000026] dark:border-[#292a2a]">
-          <RepilesInput
+          <RepliesInput
             ref={replyInputRef}
             targetUsername={currentPost?.user?.username || "user"}
             onSubmit={handleReplySubmit}
+            onSortChange={(type) => setSortBy(type)}
           />
         </div>
 
-        {!loading && replies?.length > 0 && (
+        {!loading && sortedReplies.length > 0 && (
           <div className="w-full">
-            {replies.map((reply) => (
+            {sortedReplies.map((reply) => (
               <div
                 key={reply.id}
                 className="p-4 border-b border-[#00000026] dark:border-[#292a2a]"
