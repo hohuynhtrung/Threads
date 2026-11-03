@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 
 import Icons from "@/assets/icons";
@@ -7,10 +6,12 @@ import Images from "@/assets/images";
 import { useFetchFollowers, useUserFollow } from "@/features/follow/hook";
 import FollowersModal from "@/page/Profile/components/FollowersModel";
 import EditProfileModal from "@/page/Profile/components/EditProfileModel";
+import AvatarModal from "@/page/Profile/components/AvatarModel";
 
 function ProfileInfo({ user, isOwnProfile = false }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModeOpen, setIsEditModelOpen] = useState(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
   if (!user) return null;
 
@@ -34,7 +35,10 @@ function ProfileInfo({ user, isOwnProfile = false }) {
           <span className="text-[15px] font-normal">{user.username}</span>
         </div>
 
-        <div className="w-20 h-20 rounded-full overflow-hidden bg-[#e0e0e0] dark:bg-[#262626] flex items-center justify-center shrink-0">
+        <div
+          onClick={() => setIsAvatarModalOpen(true)}
+          className="w-20 h-20 rounded-full overflow-hidden bg-[#e0e0e0] dark:bg-[#262626] flex items-center justify-center shrink-0 cursor-pointer hover:opacity-90 transition"
+        >
           {user.avatar_url ? (
             <img
               src={user.avatar_url}
@@ -142,16 +146,26 @@ function ProfileInfo({ user, isOwnProfile = false }) {
         </p>
       )}
 
+      {/* Render FollowersModal */}
       <FollowersModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         userId={userId}
       />
 
+      {/* Render EditProfileModal */}
       <EditProfileModal
         isOpen={isEditModeOpen}
         onClose={() => setIsEditModelOpen(false)}
         user={user}
+      />
+
+      {/* Render AvatarModal */}
+      <AvatarModal
+        isOpen={isAvatarModalOpen}
+        imageUrl={user.avatar_url}
+        userName={user.name}
+        onClose={() => setIsAvatarModalOpen(false)}
       />
     </div>
   );
