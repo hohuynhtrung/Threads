@@ -95,3 +95,22 @@ export const verifyEmail = createAsyncThunk(
     }
   },
 );
+
+export const updateProfile = createAsyncThunk(
+  "auth/updateProfile",
+  async (formData, { rejectWithValue }) => {
+    try {
+      // Backend F8 yêu cầu multipart/form-data kèm _method: PUT[cite: 4]
+      const response = await http.post("/auth/profile", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data || response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Cập nhật hồ sơ thất bại",
+      );
+    }
+  },
+);

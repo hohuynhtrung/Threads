@@ -7,6 +7,7 @@ import {
   forgotPassword,
   resetPassoword,
   verifyEmail,
+  updateProfile,
 } from "@/services/auth";
 
 const initialState = {
@@ -23,6 +24,8 @@ const initialState = {
   resetError: null,
   verifyingEmail: false,
   verifyEmailError: null,
+  updateProfile: false,
+  updateProfileError: null,
 };
 
 const handleLogoutSuccess = (state) => {
@@ -147,6 +150,25 @@ export const authSlice = createSlice({
       .addCase(verifyEmail.rejected, (state, action) => {
         state.verifyingEmail = false;
         state.verifyEmailError = action.payload;
+      })
+
+      // Update profile
+      .addCase(updateProfile.pending, (state) => {
+        state.updateProfile = true;
+        state.updateProfileError = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.updateProfile = false;
+        const updatedUser =
+          action.payload?.data?.data || action.payload?.data || action.payload;
+
+        if (updatedUser && state.currentUser) {
+          state.currentUser = { ...state.currentUser, ...updatedUser };
+        }
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.updateProfile = false;
+        state.updateProfileError = action.payload;
       });
   },
 });

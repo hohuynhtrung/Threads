@@ -15,11 +15,14 @@ function CreatePostInput() {
   return (
     <div className="flex items-center justify-between p-4 border-b border-[#00000026] dark:border-[#292a2a]">
       <div className="flex items-center gap-3 flex-1">
-        <Link to={`/@${currentUser.username}`} className="w-9 h-9">
+        <Link
+          to={`/@${currentUser?.username}`}
+          className="w-9 h-9 shrink-0 rounded-full overflow-hidden block"
+        >
           <img
-            src={Images.imgDefaultAvatar}
+            src={currentUser?.avatar_url || Images.imgDefaultAvatar}
             alt="User Avatar"
-            className="w-full rounded-[50%] object-cover cursor-pointer"
+            className="w-full h-full object-cover cursor-pointer"
           />
         </Link>
         <span
@@ -31,6 +34,7 @@ function CreatePostInput() {
       </div>
 
       <button
+        type="button"
         onClick={handleOpenCreateThreadModal}
         className="px-4 py-2 bg-white dark:bg-zinc-800 text-black dark:text-white font-semibold text-[16px] rounded-[10px] border border-gray-200 dark:border-zinc-700 hover:opacity-80 transition cursor-pointer"
       >

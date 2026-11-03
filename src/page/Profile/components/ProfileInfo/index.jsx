@@ -6,9 +6,11 @@ import Icons from "@/assets/icons";
 import Images from "@/assets/images";
 import { useFetchFollowers, useUserFollow } from "@/features/follow/hook";
 import FollowersModal from "@/page/Profile/components/FollowersModel";
+import EditProfileModal from "@/page/Profile/components/EditProfileModel";
 
 function ProfileInfo({ user, isOwnProfile = false }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModeOpen, setIsEditModelOpen] = useState(false);
 
   if (!user) return null;
 
@@ -103,9 +105,13 @@ function ProfileInfo({ user, isOwnProfile = false }) {
 
       {isOwnProfile ? (
         <div className="flex w-full gap-2.5">
-          <Link className="w-full flex justify-center mt-4 py-2 border border-gray-300 dark:border-[#2d2d2d] rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1e1e1e] active:scale-[0.99] transition cursor-pointer">
+          <button
+            type="button"
+            onClick={() => setIsEditModelOpen(true)}
+            className="w-full flex justify-center mt-4 py-2 border border-gray-300 dark:border-[#2d2d2d] rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1e1e1e] active:scale-[0.99] transition cursor-pointer"
+          >
             Edit profile
-          </Link>
+          </button>
           <Link
             to="/insights"
             className="w-full flex justify-center mt-4 py-2 border border-gray-300 dark:border-[#2d2d2d] rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1e1e1e] active:scale-[0.99] transition cursor-pointer"
@@ -140,6 +146,12 @@ function ProfileInfo({ user, isOwnProfile = false }) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         userId={userId}
+      />
+
+      <EditProfileModal
+        isOpen={isEditModeOpen}
+        onClose={() => setIsEditModelOpen(false)}
+        user={user}
       />
     </div>
   );

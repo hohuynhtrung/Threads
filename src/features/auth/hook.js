@@ -9,6 +9,7 @@ import {
   register,
   resetPassoword,
   verifyEmail,
+  updateProfile,
 } from "@/services/auth";
 
 export const useFetchCurrentUser = () => {
@@ -98,4 +99,20 @@ export const useVerifyEmail = () => {
   const handleVerifyEmail = (data) => dispatch(verifyEmail(data));
 
   return { handleVerifyEmail, verifyingEmail, verifyEmailError };
+};
+
+export const useUpdateProfile = () => {
+  const dispatch = useDispatch();
+  const updateProfileLoading = useSelector((state) => state.auth.updateProfile);
+  const updateProfileError = useSelector(
+    (state) => state.auth.updateProfileError,
+  );
+
+  const handleUpdateProfile = (formData) => dispatch(updateProfile(formData));
+
+  return {
+    updateProfile: handleUpdateProfile,
+    updateProfileLoading,
+    updateProfileError,
+  };
 };
