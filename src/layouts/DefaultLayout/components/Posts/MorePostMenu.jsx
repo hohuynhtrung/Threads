@@ -1,18 +1,32 @@
 import { useState, useRef, useEffect } from "react";
 import Icons from "@/assets/icons";
-import DeleteConfirmModal from "@/layouts/DefaultLayout/components/Posts/DeleteConfirmModel";
-import EmbedModal from "@/layouts/DefaultLayout/components/Posts/EmbebModel";
 import { useUserMute } from "@/features/action/hook";
+import DeleteConfirmModal from "@/layouts/DefaultLayout/components/Posts/DeleteConfirmModal";
+import EmbedModal from "@/layouts/DefaultLayout/components/Posts/EmbebModel";
+import EditPostModal from "@/layouts/DefaultLayout/components/Posts/EditPostModal";
+import { useCountdown } from "@/layouts/DefaultLayout/helper/useCountdown";
 
 function MorePostMenu({ post, isOwnPost = false, onDelete }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isEmbedOpen, setIsEmbedOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const menuRef = useRef(null);
+
   const user = post?.user;
   const userId = user?.id ? String(post.user.id) : null;
   const { isMuted, toggleMute, initMuteStatus } = useUserMute(userId);
+
+  const { timeLeft, isExpired } = useCountdown(post?.created_at);
+
+  const isWithin15Minutes = (() => {
+    if (!post?.created_at || isExpired) return false;
+    const createdTime = new Date(post.created_at).getTime();
+    const currentTime = new Date().getTime();
+    const diffInMinutes = (currentTime - createdTime) / (1000 * 60);
+    return diffInMinutes <= 15;
+  })();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -118,6 +132,23 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
                     className="w-5 h-5"
                   />
                 </button>
+
+                {isWithin15Minutes && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsOpen(false);
+                      setIsEditOpen(true);
+                    }}
+                    className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-[#262626] transition cursor-pointer"
+                  >
+                    <span>Edit</span>
+                    <span className="text-xs font-mono text-gray-400 dark:bg-zinc-800 px-2 py-0.5 rounded-md">
+                      {timeLeft}
+                    </span>
+                  </button>
+                )}
 
                 <div className="h-px bg-gray-100 dark:bg-[#2d2d2d] my-1" />
 
@@ -397,17 +428,24 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
         )}
       </div>
 
-      {/* --- MODAL XÁC NHẬN XÓA --- */}
+      {/* Delete Confirm Modal */}
       <DeleteConfirmModal
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleConfirmDelete}
       />
 
-      {/* --- MODAL EMBED CODE --- */}
+      {/* Embed code Modal */}
       <EmbedModal
         isOpen={isEmbedOpen}
         onClose={() => setIsEmbedOpen(false)}
+        post={post}
+      />
+
+      {/* Edit Post Modal */}
+      <EditPostModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
         post={post}
       />
 

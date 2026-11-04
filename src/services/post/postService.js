@@ -128,6 +128,25 @@ export const deletePost = createAsyncThunk(
   },
 );
 
+// PUT Post
+export const updatePost = createAsyncThunk(
+  "posts/updatePost",
+  async ({ postId, content }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("_method", "PUT");
+      formData.append("content", content);
+
+      const response = await http.post(`/posts/${postId}`, formData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || error.message || "Update post failed",
+      );
+    }
+  },
+);
+
 export const fetchRepliesPreview = (
   postId,
   { page = 1, per_page = 2 } = {},

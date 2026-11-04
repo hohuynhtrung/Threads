@@ -9,6 +9,7 @@ import {
   getUserReposts,
   likePost,
   repostPost,
+  updatePost,
 } from "@/services/post/postService";
 
 const initialState = {
@@ -261,6 +262,47 @@ export const postSlice = createSlice({
         }
       })
       .addCase(deletePost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Update post
+      .addCase(updatePost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePost.fulfilled, (state, action) => {
+        state.loading = false;
+        // Lấy dữ liệu bài viết sau khi update từ response trả về của API
+        const updatedPost = action.payload?.data || action.payload;
+
+        if (updatedPost && updatedPost.id) {
+          // 1. Cập nhật trong danh sách list feed
+          const index = state.list.findIndex(
+            (item) => item.id === updatedPost.id,
+          );
+          if (index !== -1) {
+            state.list[index] = { ...state.list[index], ...updatedPost };
+          }
+
+          // 2. Cập nhật nếu đang ở trang chi tiết currentPost
+          if (state.currentPost?.id === updatedPost.id) {
+            state.currentPost = { ...state.currentPost, ...updatedPost };
+          }
+
+          // 3. Cập nhật trong danh sách replies nếu bài update nằm trong replies
+          const replyIndex = state.replies.findIndex(
+            (item) => item.id === updatedPost.id,
+          );
+          if (replyIndex !== -1) {
+            state.replies[replyIndex] = {
+              ...state.replies[replyIndex],
+              ...updatedPost,
+            };
+          }
+        }
+      })
+      .addCase(updatePost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
