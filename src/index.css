@@ -28,10 +28,13 @@ body {
     sans-serif;
 }
 
-/* body[data-scroll-locked] {
-  overflow: auto !important;
-  padding-right: 0px !important;
-} */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
 
 @theme inline {
   --font-heading: var(--font-sans);

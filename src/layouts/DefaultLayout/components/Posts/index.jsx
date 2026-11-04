@@ -4,7 +4,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { usePosts } from "@/features/post/hook";
 
-function Posts() {
+function Posts({ scrollRef }) {
   const { posts, loading, pagination, hasMore, fetchPosts } = usePosts();
 
   const currentPage = pagination?.current_page || 1;
@@ -26,7 +26,18 @@ function Posts() {
     }
   };
 
-  const observerRef = useInfiniteScroll(handleLoadMore, hasMore, loading);
+  useEffect(() => {
+    if (posts.length === 0) {
+      fetchPosts({ type: "for_you", page: 1 });
+    }
+  }, [fetchPosts, posts.length]);
+
+  const observerRef = useInfiniteScroll(
+    handleLoadMore,
+    hasMore,
+    loading,
+    scrollRef,
+  );
 
   return (
     <div className="flex flex-col">

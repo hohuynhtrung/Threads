@@ -1,19 +1,33 @@
 import { useEffect } from "react";
 
-export const useInfiniteScroll = (callback, hasMore, loading) => {
+export const useInfiniteScroll = (callback, hasMore, loading, scrollRef) => {
   useEffect(() => {
+    const scrollElement = scrollRef?.current;
+
+    if (!scrollElement) return;
+
     const handleScroll = () => {
-      const scrollPosition =
-        window.innerHeight + document.documentElement.scrollTop;
+      const { scrollTop, clientHeight, scrollHeight } = scrollElement;
 
-      const targetPosition = document.documentElement.offsetHeight - 200;
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 200;
 
-      if (scrollPosition >= targetPosition && hasMore && !loading) {
+      if (isNearBottom && hasMore && !loading) {
         callback();
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [callback, hasMore, loading]);
+    const handleWheel = (event) => {
+      if (!scrollElement.contains(event.target)) {
+        scrollElement.scrollTop += event.deltaY;
+      }
+    };
+
+    scrollElement.addEventListener("scroll", handleScroll);
+    window.addEventListener("wheel", handleWheel, { passive: true });
+
+    return () => {
+      scrollElement.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("wheel", handleWheel);
+    };
+  }, [callback, hasMore, loading, scrollRef]);
 };

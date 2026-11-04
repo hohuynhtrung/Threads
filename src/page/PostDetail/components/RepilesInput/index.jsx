@@ -219,7 +219,7 @@ function RepliesInput({
 
         {/* Preview media: cuộn ngang, canh lề theo ô nhập (avatar 8 + gap 3 = pl-11) */}
         {hasMedia && (
-          <div className="flex gap-2 overflow-x-auto pl-11 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex gap-2 overflow-x-auto pl-11 pb-1 scrollbar-none [&::-webkit-scrollbar]:hidden">
             {media.items.map((item) => (
               <div
                 key={item.id}
