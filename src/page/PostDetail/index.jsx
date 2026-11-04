@@ -70,15 +70,15 @@ function PostDetail() {
     });
   }, [replies, sortBy]);
 
-  const handleReplySubmit = async (content) => {
-    if (!content.trim()) return;
+  const handleReplySubmit = async (content, mediaFiles = []) => {
+    if (!content && mediaFiles.length === 0) return false;
     try {
-      const newReply = await createReply(id, content).unwrap();
-      if (newReply) {
-        fetchReplies(id);
-      }
+      await createReply(id, content, mediaFiles).unwrap();
+      fetchReplies(id);
+      return true;
     } catch (error) {
       console.error("Error send reply", error);
+      return false;
     }
   };
 

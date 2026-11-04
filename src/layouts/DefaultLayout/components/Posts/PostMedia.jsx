@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import MediaLightbox from "@/layouts/DefaultLayout/components/Posts/MediaLightbox";
 
 const VIDEO_REGEX = /\.(mp4|webm|ogg|mov)(\?.*)?$/i;
-const DRAG_THRESHOLD = 5; // px: kéo quá ngưỡng này mới tính là "kéo", không phải "click"
+const DRAG_THRESHOLD = 5;
 
 function useDragScroll() {
   const ref = useRef(null);
@@ -11,7 +11,6 @@ function useDragScroll() {
 
   const onMouseDown = (e) => {
     const el = ref.current;
-    // Chỉ nhận chuột trái, và không bắt đầu kéo khi bấm vào thanh điều khiển video
     if (!el || e.button !== 0 || e.target.closest("video")) return;
 
     drag.current = {
@@ -38,7 +37,6 @@ function useDragScroll() {
       window.removeEventListener("mouseup", handleUp);
     };
 
-    // Gắn vào window để vẫn kéo được khi con trỏ trượt ra ngoài khung
     window.addEventListener("mousemove", handleMove);
     window.addEventListener("mouseup", handleUp);
   };
@@ -56,7 +54,6 @@ function PostMedia({ urls = [] }) {
 
   const isSingle = urls.length === 1;
 
-  // Nếu vừa kéo xong thì chặn click (không mở modal, không điều hướng sang post detail)
   const handleClickCapture = (e) => {
     if (wasDragged()) {
       e.preventDefault();
@@ -65,7 +62,7 @@ function PostMedia({ urls = [] }) {
   };
 
   const openLightbox = (e, index) => {
-    e.stopPropagation(); // không để PostItem điều hướng sang trang chi tiết
+    e.stopPropagation();
     setLightboxIndex(index);
   };
 
@@ -78,7 +75,7 @@ function PostMedia({ urls = [] }) {
         className={
           isSingle
             ? "mt-2"
-            : `mt-2 flex gap-2 overflow-x-auto select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+            : `mt-2 flex gap-2 overflow-x-auto select-none scrollbar-none [&::-webkit-scrollbar]:hidden ${
                 isDragging ? "cursor-grabbing" : "cursor-grab"
               }`
         }

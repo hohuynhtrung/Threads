@@ -79,7 +79,8 @@ export const usePosts = (currentUserId) => {
   );
 
   const handleCreateReply = useCallback(
-    (postId, content) => dispatch(createReply({ postId, content })),
+    (postId, content, mediaFiles = []) =>
+      dispatch(createReply({ postId, content, mediaFiles })),
     [dispatch],
   );
 

@@ -74,12 +74,20 @@ export const getReplies = createAsyncThunk(
 // POST reply
 export const createReply = createAsyncThunk(
   "post/createReply",
-  async ({ postId, content }, { rejectWithValue }) => {
+  async ({ postId, content, mediaFiles = [] }, { rejectWithValue }) => {
     try {
-      const response = await http.post(`/posts/${postId}/reply`, { content });
-      return { postId, reply: response };
+      let body = { content };
+
+      if (mediaFiles.length > 0) {
+        body = new FormData();
+        body.append("content", content);
+        mediaFiles.forEach((file) => body.append("media[]", file));
+      }
+
+      const response = await http.post(`/posts/${postId}/reply`, body);
+      return { postId, data: response };
     } catch (error) {
-      return rejectWithValue(error.response.message);
+      return rejectWithValue(error.response?.data?.message || "Reply failed");
     }
   },
 );
