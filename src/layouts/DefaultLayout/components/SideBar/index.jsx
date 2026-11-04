@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { getPost } from "@/services/post/postService";
 import { useCurrentUser } from "@/features/auth/hook";
 import CreateThreadModal from "@/layouts/DefaultLayout/components/CreateThreadModal";
-import RequireLoginModal from "@/layouts/DefaultLayout/components/RequireLoginModel";
+import RequireLoginModal from "@/layouts/DefaultLayout/components/RequireLoginModal";
 import Icons from "@/assets/icons";
 
 import NavItem from "./NavItem";

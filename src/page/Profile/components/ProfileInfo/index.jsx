@@ -4,13 +4,13 @@ import { Link } from "react-router";
 import Icons from "@/assets/icons";
 import Images from "@/assets/images";
 import { useFetchFollowers, useUserFollow } from "@/features/follow/hook";
-import FollowersModal from "@/page/Profile/components/FollowersModel";
-import EditProfileModal from "@/page/Profile/components/EditProfileModel";
-import AvatarModal from "@/page/Profile/components/AvatarModel";
+import FollowersModal from "@/page/Profile/components/FollowersModal";
+import EditProfileModal from "@/page/Profile/components/EditProfileModal";
+import AvatarModal from "@/page/Profile/components/AvatarModal";
 
 function ProfileInfo({ user, isOwnProfile = false }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModeOpen, setIsEditModelOpen] = useState(false);
+  const [isEditModeOpen, setIsEditModalOpen] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
   if (!user) return null;
@@ -111,7 +111,7 @@ function ProfileInfo({ user, isOwnProfile = false }) {
         <div className="flex w-full gap-2.5">
           <button
             type="button"
-            onClick={() => setIsEditModelOpen(true)}
+            onClick={() => setIsEditModalOpen(true)}
             className="w-full flex justify-center mt-4 py-2 border border-gray-300 dark:border-[#2d2d2d] rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-[#1e1e1e] active:scale-[0.99] transition cursor-pointer"
           >
             Edit profile
@@ -156,7 +156,7 @@ function ProfileInfo({ user, isOwnProfile = false }) {
       {/* Render EditProfileModal */}
       <EditProfileModal
         isOpen={isEditModeOpen}
-        onClose={() => setIsEditModelOpen(false)}
+        onClose={() => setIsEditModalOpen(false)}
         user={user}
       />
 

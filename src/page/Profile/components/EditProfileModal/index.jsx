@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import { useCurrentUser, useUpdateProfile } from "@/features/auth/hook";
-import EditFieldModal from "@/page/Profile/components/EditProfileModel/components/EditFieldModal";
-import AvatarPickerMenu from "@/page/Profile/components/EditProfileModel/components/AvatarPickerMenu";
+import EditFieldModal from "@/page/Profile/components/EditProfileModal/components/EditFieldModal";
+import AvatarPickerMenu from "@/page/Profile/components/EditProfileModal/components/AvatarPickerMenu";
 
 function EditProfileModal({ isOpen, onClose }) {
   const currentUser = useCurrentUser();

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Icons from "@/assets/icons";
 import { useUserMute } from "@/features/action/hook";
 import DeleteConfirmModal from "@/layouts/DefaultLayout/components/Posts/DeleteConfirmModal";
-import EmbedModal from "@/layouts/DefaultLayout/components/Posts/EmbebModel";
+import EmbedModal from "@/layouts/DefaultLayout/components/Posts/EmbebModal";
 import EditPostModal from "@/layouts/DefaultLayout/components/Posts/EditPostModal";
 import { useCountdown } from "@/layouts/DefaultLayout/helper/useCountdown";
 

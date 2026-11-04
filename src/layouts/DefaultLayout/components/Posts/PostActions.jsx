@@ -2,7 +2,7 @@ import Icons from "@/assets/icons";
 import { formatCount } from "@/layouts/DefaultLayout/helper/formatCount";
 import { usePosts } from "@/features/post/hook";
 import { useCurrentUser } from "@/features/auth/hook";
-import RequireLoginModal from "@/layouts/DefaultLayout/components/RequireLoginModel";
+import RequireLoginModal from "@/layouts/DefaultLayout/components/RequireLoginModal";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
