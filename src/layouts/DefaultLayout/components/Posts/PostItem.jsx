@@ -8,7 +8,7 @@ import ReplyPreviewList from "@/layouts/DefaultLayout/components/Posts/ReplyPrev
 import MorePostMenu from "@/layouts/DefaultLayout/components/Posts/MorePostMenu";
 import { usePosts } from "@/features/post/hook";
 import { useUserMute } from "@/features/action/hook";
-
+import PostMedia from "@/layouts/DefaultLayout/components/Posts/PostMedia";
 import Images from "@/assets/images";
 
 function PostItem({
@@ -109,7 +109,7 @@ function PostItem({
           </button>
         </div>
 
-        <div className="w-full">
+        <div className="w-full min-w-0">
           <div className="flex justify-between items-center">
             <button
               type="button"
@@ -144,6 +144,7 @@ function PostItem({
           >
             {post?.content}
           </p>
+          <PostMedia urls={post?.media_urls} />
 
           {!isAncestor && (
             <div onClick={(e) => e.stopPropagation()}>
