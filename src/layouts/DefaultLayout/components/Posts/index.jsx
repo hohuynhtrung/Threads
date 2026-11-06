@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import PostItem from "@/layouts/DefaultLayout/components/Posts/PostItem";
 import { Spinner } from "@/components/ui/spinner";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
@@ -6,15 +6,17 @@ import { usePosts } from "@/features/post/hook";
 
 function Posts({ scrollRef }) {
   const { posts, loading, pagination, hasMore, fetchPosts } = usePosts();
+  const hasFetchedInitialPosts = useRef(false);
 
   const currentPage = pagination?.current_page || 1;
   const nextPage = currentPage + 1;
 
   useEffect(() => {
-    if (posts.length === 0) {
-      fetchPosts({ type: "for_you", page: 1 });
-    }
-  }, [fetchPosts, posts.length]);
+    if (hasFetchedInitialPosts.current) return;
+
+    hasFetchedInitialPosts.current = true;
+    fetchPosts({ type: "for_you", page: 1 });
+  }, [fetchPosts]);
 
   const handleLoadMore = () => {
     if (hasMore && !loading) {
@@ -25,12 +27,6 @@ function Posts({ scrollRef }) {
       });
     }
   };
-
-  useEffect(() => {
-    if (posts.length === 0) {
-      fetchPosts({ type: "for_you", page: 1 });
-    }
-  }, [fetchPosts, posts.length]);
 
   const observerRef = useInfiniteScroll(
     handleLoadMore,

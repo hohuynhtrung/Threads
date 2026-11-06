@@ -155,6 +155,24 @@ export const updatePost = createAsyncThunk(
   },
 );
 
+// POST Quote
+export const quotePost = createAsyncThunk(
+  "posts/quotePost",
+  async ({ postId, data }, { rejectWithValue }) => {
+    try {
+      // Kiểm tra kỹ xem postId có truyền vào đây không nhé
+      console.log("URL gọi API:", `/posts/${postId}/quote`);
+
+      const response = await http.post(`/posts/${postId}/quote`, data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Quote post failed",
+      );
+    }
+  },
+);
+
 export const fetchRepliesPreview = (
   postId,
   { page = 1, per_page = 2 } = {},

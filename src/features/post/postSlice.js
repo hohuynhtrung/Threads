@@ -10,6 +10,7 @@ import {
   likePost,
   repostPost,
   updatePost,
+  quotePost,
 } from "@/services/post/postService";
 
 const initialState = {
@@ -253,10 +254,7 @@ export const postSlice = createSlice({
         state.loading = false;
         const deletedPostId = action.meta.arg;
 
-        // Lọc bỏ bài viết đã xóa khỏi danh sách list
         state.list = state.list.filter((post) => post.id !== deletedPostId);
-
-        // Nếu bài viết đang xem chi tiết chính là bài bị xóa thì reset currentPost về null
         if (state.currentPost?.id === deletedPostId) {
           state.currentPost = null;
         }
@@ -273,24 +271,18 @@ export const postSlice = createSlice({
       })
       .addCase(updatePost.fulfilled, (state, action) => {
         state.loading = false;
-        // Lấy dữ liệu bài viết sau khi update từ response trả về của API
         const updatedPost = action.payload?.data || action.payload;
 
         if (updatedPost && updatedPost.id) {
-          // 1. Cập nhật trong danh sách list feed
           const index = state.list.findIndex(
             (item) => item.id === updatedPost.id,
           );
           if (index !== -1) {
             state.list[index] = { ...state.list[index], ...updatedPost };
           }
-
-          // 2. Cập nhật nếu đang ở trang chi tiết currentPost
           if (state.currentPost?.id === updatedPost.id) {
             state.currentPost = { ...state.currentPost, ...updatedPost };
           }
-
-          // 3. Cập nhật trong danh sách replies nếu bài update nằm trong replies
           const replyIndex = state.replies.findIndex(
             (item) => item.id === updatedPost.id,
           );
@@ -303,6 +295,23 @@ export const postSlice = createSlice({
         }
       })
       .addCase(updatePost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Quote Post
+      .addCase(quotePost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(quotePost.fulfilled, (state, action) => {
+        state.loading = false;
+        // Đưa bài viết mới được quote lên đầu danh sách hiển thị luôn
+        if (action.payload?.data) {
+          state.list.unshift(action.payload.data);
+        }
+      })
+      .addCase(quotePost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

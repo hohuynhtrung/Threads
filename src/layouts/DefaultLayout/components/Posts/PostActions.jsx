@@ -5,6 +5,7 @@ import { useCurrentUser } from "@/features/auth/hook";
 import RequireLoginModal from "@/layouts/DefaultLayout/components/RequireLoginModal";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import CreateThreadModal from "@/layouts/DefaultLayout/components/CreateThreadModal";
 
 function PostActions({ post, onCommentClick }) {
   const { likePost, repostPost } = usePosts();
@@ -18,6 +19,9 @@ function PostActions({ post, onCommentClick }) {
 
   const isPostLike = Boolean(post.is_liked_by_auth);
   const isReposted = Boolean(post.is_reposted_by_auth);
+
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+  const [quotedPostData, setQuotedPostData] = useState(null);
 
   useEffect(() => {
     if (!showRepostMenu) return;
@@ -149,7 +153,8 @@ function PostActions({ post, onCommentClick }) {
               <button
                 className="w-full text-left px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#2d2d2d]"
                 onClick={() => {
-                  // TODO: mở composer quote
+                  setQuotedPostData(post); // 🔑 Phải truyền bài post hiện tại vào đây
+                  setIsQuoteModalOpen(true);
                   setShowRepostMenu(false);
                 }}
               >
@@ -163,6 +168,15 @@ function PostActions({ post, onCommentClick }) {
       <RequireLoginModal
         isOpen={isOpenRequireLogin}
         onClose={() => setIsOpenRequireLogin(false)}
+      />
+
+      <CreateThreadModal
+        isOpen={isQuoteModalOpen}
+        onClose={() => {
+          setIsQuoteModalOpen(false);
+          setQuotedPostData(null);
+        }}
+        quotedPost={quotedPostData}
       />
     </div>
   );

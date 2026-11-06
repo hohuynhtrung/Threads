@@ -13,6 +13,7 @@ import {
   getUserReposts,
   likePost,
   repostPost,
+  quotePost,
   deletePost,
   updatePost,
 } from "@/services/post/postService";
@@ -88,6 +89,12 @@ export const usePosts = (currentUserId) => {
     (postId) => dispatch(repostPost(postId)),
     [dispatch],
   );
+
+  const handleQuotePost = useCallback(
+    (postId, data) => dispatch(quotePost({ postId, data })),
+    [dispatch],
+  );
+
   const handleClearReposts = useCallback(
     () => dispatch(clearReposts()),
     [dispatch],
@@ -131,5 +138,6 @@ export const usePosts = (currentUserId) => {
     repostPost: handleRepostPost,
     deletePost: handleDeletePost,
     updatePost: handleUpdatePost,
+    quotePost: handleQuotePost,
   };
 };

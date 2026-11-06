@@ -11,6 +11,8 @@ import { useUserMute } from "@/features/action/hook";
 import PostMedia from "@/layouts/DefaultLayout/components/Posts/PostMedia";
 import Images from "@/assets/images";
 
+import QuotedPostItem from "@/layouts/DefaultLayout/components/Posts/QuotePostItem";
+
 function PostItem({
   post,
   variant = "feed",
@@ -129,7 +131,6 @@ function PostItem({
             />
           </div>
 
-          {/* Reply preview */}
           {!isAncestor && post?.reply_to_username && (
             <p className="text-[13px] text-gray-400 dark:text-gray-500">
               Trả lời{" "}
@@ -144,7 +145,12 @@ function PostItem({
           >
             {post?.content}
           </p>
+
           <PostMedia urls={post?.media_urls} />
+
+          {(post?.is_quote || post?.original_post) && post?.original_post && (
+            <QuotedPostItem originalPost={post.original_post} />
+          )}
 
           {!isAncestor && (
             <div onClick={(e) => e.stopPropagation()}>

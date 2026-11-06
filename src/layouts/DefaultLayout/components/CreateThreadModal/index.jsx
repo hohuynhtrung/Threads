@@ -12,16 +12,17 @@ import {
 import { useCurrentUser } from "@/features/auth/hook";
 import Images from "@/assets/images";
 import Icons from "@/assets/icons";
+import { usePosts } from "@/features/post/hook";
+import { formatTimeAgo } from "@/layouts/DefaultLayout/helper/formatTimeAgo";
 
 const MAX_MEDIA = 10;
 
-function CreateThreadModal({ isOpen, onClose }) {
+function CreateThreadModal({ isOpen, onClose, quotedPost = null }) {
   const [content, setContent] = useState("");
   const [topic, setTopic] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  // Mỗi phần tử: { id, file, preview, type: "image" | "video" }
   const [mediaItems, setMediaItems] = useState([]);
   const [mediaError, setMediaError] = useState("");
 
@@ -35,6 +36,9 @@ function CreateThreadModal({ isOpen, onClose }) {
   const mediaRef = useRef([]);
   const dispatch = useDispatch();
   const currentUser = useCurrentUser();
+  const { quotePost: quotePostAction } = usePosts(currentUser?.id);
+
+  console.log("Đang thực hiện quote bài viết có ID:", quotedPost?.id);
 
   // Giữ bản mới nhất để dọn object URL khi component unmount
   mediaRef.current = mediaItems;
@@ -127,10 +131,15 @@ function CreateThreadModal({ isOpen, onClose }) {
       formData.append("reply_permission", "everyone");
       if (topic.trim()) formData.append("topic", topic.trim());
 
-      // Nhiều file: append lặp lại cùng key "media[]"
       mediaItems.forEach((item) => formData.append("media[]", item.file));
 
-      await dispatch(createPost(formData)).unwrap();
+      // 🔑 Phân biệt gọi API Quote hay tạo Post thông thường
+      if (quotedPost) {
+        // Gọi qua hàm của hook đã bọc sẵn dispatch
+        await quotePostAction(quotedPost.id, formData).unwrap();
+      } else {
+        await dispatch(createPost(formData)).unwrap();
+      }
 
       resetForm();
       onClose();
@@ -385,6 +394,43 @@ function CreateThreadModal({ isOpen, onClose }) {
                   );
                 })}
               </div>
+
+              {/* KHUNG HIỂN THỊ BÀI POST ĐƯỢC QUOTE */}
+              {quotedPost && (
+                <div className="mt-2 p-3.5 border border-gray-200 dark:border-zinc-700 rounded-2xl bg-transparent flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={
+                        quotedPost?.user?.avatar_url || Images.imgDefaultAvatar
+                      }
+                      alt="Quote author"
+                      className="w-5 h-5 rounded-full object-cover"
+                    />
+                    <span className="font-semibold text-sm">
+                      {quotedPost?.user?.name || quotedPost?.user?.username}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {quotedPost?.created_at
+                        ? formatTimeAgo(quotedPost.created_at)
+                        : ""}
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-black dark:text-gray-200 line-clamp-3">
+                    {quotedPost?.content}
+                  </p>
+
+                  {/* Xử lý hiển thị media của bài quote (hỗ trợ cả ảnh và gif như trong JSON mẫu của bạn) */}
+                  {quotedPost?.media_urls &&
+                    quotedPost.media_urls.length > 0 && (
+                      <img
+                        src={quotedPost.media_urls[0]}
+                        alt="Quote media"
+                        className="w-full h-32 object-cover rounded-xl mt-1"
+                      />
+                    )}
+                </div>
+              )}
 
               <div className="text-sm text-gray-300 dark:text-zinc-600 cursor-not-allowed select-none">
                 Add to thread
