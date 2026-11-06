@@ -16,14 +16,16 @@ import {
   quotePost,
   deletePost,
   updatePost,
+  toggleSavePost,
 } from "@/services/post/postService";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export const usePosts = (currentUserId) => {
   const dispatch = useDispatch();
 
   const posts = useSelector((state) => state.posts.list);
+  const saveList = useSelector((state) => state.posts.saveList);
   const myPosts = posts.filter((post) => post.user_id === currentUserId);
   const currentPost = useSelector((state) => state.posts.currentPost);
   const replies = useSelector((state) => state.posts.replies);
@@ -110,9 +112,25 @@ export const usePosts = (currentUserId) => {
     [dispatch],
   );
 
+  const savedPosts = useMemo(() => {
+    const postsById = new Map();
+    [...posts, ...saveList].forEach((post) => postsById.set(post.id, post));
+    return [...postsById.values()].filter(
+      (post) => post.is_saved_by_auth === true,
+    );
+  }, [posts, saveList]);
+
+  const handleToggleSave = useCallback(
+    (postId, post) => {
+      return dispatch(toggleSavePost({ postId, post }));
+    },
+    [dispatch],
+  );
+
   return {
     posts,
     myPosts,
+    savedPosts,
     reposts,
     currentPost,
     pagination,
@@ -139,5 +157,6 @@ export const usePosts = (currentUserId) => {
     deletePost: handleDeletePost,
     updatePost: handleUpdatePost,
     quotePost: handleQuotePost,
+    savePost: handleToggleSave,
   };
 };

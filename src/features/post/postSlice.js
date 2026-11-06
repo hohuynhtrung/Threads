@@ -11,10 +11,12 @@ import {
   repostPost,
   updatePost,
   quotePost,
+  toggleSavePost,
 } from "@/services/post/postService";
 
 const initialState = {
   list: [],
+  saveList: [],
   reposts: [],
   loadingReposts: false,
   currentPost: null,
@@ -312,6 +314,64 @@ export const postSlice = createSlice({
         }
       })
       .addCase(quotePost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Toggle save post
+      .addCase(toggleSavePost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(toggleSavePost.fulfilled, (state, action) => {
+        state.loading = false;
+        const { postId, post: requestedPost, data } = action.payload;
+        const responsePost = data?.data?.id ? data.data : data?.id ? data : null;
+        const existingPost =
+          state.list.find((item) => item.id === postId) ||
+          (state.currentPost?.id === postId ? state.currentPost : null) ||
+          state.replies.find((item) => item.id === postId) ||
+          state.reposts.find((item) => item.id === postId) ||
+          requestedPost;
+        const isSaved =
+          typeof responsePost?.is_saved_by_auth === "boolean"
+            ? responsePost.is_saved_by_auth
+            : !existingPost?.is_saved_by_auth;
+        const updatedPost = {
+          ...existingPost,
+          ...responsePost,
+          is_saved_by_auth: isSaved,
+        };
+
+        state.list = state.list.map((item) =>
+          item.id === postId ? updatedPost : item,
+        );
+        if (state.currentPost?.id === postId) {
+          state.currentPost = updatedPost;
+        }
+        state.replies = state.replies.map((item) =>
+          item.id === postId ? updatedPost : item,
+        );
+        state.reposts = state.reposts.map((item) =>
+          item.id === postId ? updatedPost : item,
+        );
+
+        if (isSaved) {
+          const savedIndex = state.saveList.findIndex(
+            (item) => item.id === postId,
+          );
+          if (savedIndex === -1) {
+            state.saveList.push(updatedPost);
+          } else {
+            state.saveList[savedIndex] = updatedPost;
+          }
+        } else {
+          state.saveList = state.saveList.filter(
+            (item) => item.id !== postId,
+          );
+        }
+      })
+      .addCase(toggleSavePost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

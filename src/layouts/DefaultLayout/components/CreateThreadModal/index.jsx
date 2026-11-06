@@ -38,8 +38,6 @@ function CreateThreadModal({ isOpen, onClose, quotedPost = null }) {
   const currentUser = useCurrentUser();
   const { quotePost: quotePostAction } = usePosts(currentUser?.id);
 
-  console.log("Đang thực hiện quote bài viết có ID:", quotedPost?.id);
-
   // Giữ bản mới nhất để dọn object URL khi component unmount
   mediaRef.current = mediaItems;
   useEffect(() => {

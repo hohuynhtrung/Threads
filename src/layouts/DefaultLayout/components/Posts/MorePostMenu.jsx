@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Icons from "@/assets/icons";
 import { useUserMute } from "@/features/action/hook";
+import { usePosts } from "@/features/post/hook";
 import DeleteConfirmModal from "@/layouts/DefaultLayout/components/Posts/DeleteConfirmModal";
 import EmbedModal from "@/layouts/DefaultLayout/components/Posts/EmbebModal";
 import EditPostModal from "@/layouts/DefaultLayout/components/Posts/EditPostModal";
@@ -12,11 +13,15 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
   const [isEmbedOpen, setIsEmbedOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+
   const menuRef = useRef(null);
 
   const user = post?.user;
   const userId = user?.id ? String(post.user.id) : null;
   const { isMuted, toggleMute, initMuteStatus } = useUserMute(userId);
+
+  const { savePost } = usePosts();
+  const isSaved = post?.is_saved_by_auth === true;
 
   const { timeLeft, isExpired } = useCountdown(post?.created_at);
 
@@ -45,6 +50,12 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
   const handleToggleMenu = (e) => {
     e.stopPropagation();
     setIsOpen((prev) => !prev);
+  };
+
+  const handleToggleSaveClick = (e) => {
+    e.stopPropagation();
+    savePost(post.id, post);
+    setIsOpen(false);
   };
 
   const handleCopyLink = (e) => {
@@ -182,17 +193,14 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
 
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsOpen(false);
-                  }}
+                  onClick={handleToggleSaveClick}
                   className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-[#262626] transition cursor-pointer"
                 >
-                  <span>Save</span>
+                  <span>{isSaved ? "Unsave" : "Save"}</span>
                   <img
                     src={Icons.iconSaved}
-                    title="Saved"
-                    className="w-5 h-5"
+                    title={isSaved ? "Unsave" : "Saved"}
+                    className={`w-5 h-5 ${isSaved ? "opacity-100" : "opacity-60"}`}
                   />
                 </button>
 
@@ -304,17 +312,14 @@ function MorePostMenu({ post, isOwnPost = false, onDelete }) {
 
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsOpen(false);
-                  }}
+                  onClick={handleToggleSaveClick}
                   className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-[#262626] transition cursor-pointer"
                 >
-                  <span>Save</span>
+                  <span>{isSaved ? "Unsave" : "Save"}</span>
                   <img
                     src={Icons.iconSaved}
-                    title="Saved"
-                    className="w-5 h-5"
+                    title={isSaved ? "Unsave" : "Saved"}
+                    className={`w-5 h-5 ${isSaved ? "opacity-100" : "opacity-60"}`}
                   />
                 </button>
 

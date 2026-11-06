@@ -173,6 +173,21 @@ export const quotePost = createAsyncThunk(
   },
 );
 
+// POST Save
+export const toggleSavePost = createAsyncThunk(
+  "posts/toggleSavePost",
+  async ({ postId, post }, { rejectWithValue }) => {
+    try {
+      const response = await http.post(`/posts/${postId}/save`);
+      return { postId, post, data: response.data };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Không thể lưu bài viết",
+      );
+    }
+  },
+);
+
 export const fetchRepliesPreview = (
   postId,
   { page = 1, per_page = 2 } = {},
