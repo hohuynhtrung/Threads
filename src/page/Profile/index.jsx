@@ -1,6 +1,6 @@
 import Icons from "@/assets/icons";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useCurrentUser, useFetchCurrentUser } from "@/features/auth/hook";
 import { usePosts } from "@/features/post/hook";
@@ -15,12 +15,11 @@ function Profile() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
   const location = useLocation();
-  const { username } = useParams();
   const [activeTab, setActiveTab] = useState("threads");
 
   const profileUser = location.state?.user || currentUser;
   const profileUserId = profileUser?.id;
-  const { posts, myPosts, loading, fetchPosts } = usePosts(profileUserId);
+  const { posts, fetchPosts } = usePosts(profileUserId);
 
   useEffect(() => {
     if (posts.length === 0) {
@@ -28,13 +27,17 @@ function Profile() {
     }
   }, [fetchPosts, posts.length]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [profileUserId]);
+
   if (!profileUser) return null;
 
   const isOwnProfile = currentUser && profileUser?.id === currentUser.id;
 
   return (
-    <div className="flex flex-col w-160 mt-5">
-      <div className="flex max-w-160 items-center justify-between w-full px-4">
+    <div className="w-160">
+      <div className="sticky top-0 z-20 w-160 h-17.5 flex items-center justify-between px-4 bg-white dark:bg-black">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
@@ -50,6 +53,7 @@ function Profile() {
             {profileUser.name}
           </h1>
         </div>
+
         {isOwnProfile ? (
           <button className="hover:opacity-70 transition cursor-pointer">
             <img
@@ -62,7 +66,8 @@ function Profile() {
           <div className="w-6" />
         )}
       </div>
-      <div className="w-full h-full max-w-160 mt-5 border-[#00000026] dark:border-[#2d2d2d] border rounded-3xl">
+
+      <div className="w-full border border-[#00000026] dark:border-[#2d2d2d] rounded-t-3xl">
         <ProfileInfo user={profileUser} isOwnProfile={isOwnProfile} />
         <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
         <div className="flex flex-col items-center justify-center text-gray-400 text-sm">

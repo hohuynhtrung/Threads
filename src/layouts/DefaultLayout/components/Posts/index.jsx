@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import PostItem from "@/layouts/DefaultLayout/components/Posts/PostItem";
 import { Spinner } from "@/components/ui/spinner";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { usePosts } from "@/features/post/hook";
 
-function Posts({ scrollRef }) {
+function Posts() {
   const { posts, loading, pagination, hasMore, fetchPosts } = usePosts();
   const hasFetchedInitialPosts = useRef(false);
 
@@ -18,22 +18,17 @@ function Posts({ scrollRef }) {
     fetchPosts({ type: "for_you", page: 1 });
   }, [fetchPosts]);
 
-  const handleLoadMore = () => {
-    if (hasMore && !loading) {
-      fetchPosts({
-        type: "for_you",
-        page: nextPage,
-        per_page: pagination?.per_page || 15,
-      });
-    }
-  };
+  const handleLoadMore = useCallback(() => {
+    if (!hasMore || loading) return;
 
-  const observerRef = useInfiniteScroll(
-    handleLoadMore,
-    hasMore,
-    loading,
-    scrollRef,
-  );
+    fetchPosts({
+      type: "for_you",
+      page: nextPage,
+      per_page: pagination?.per_page || 15,
+    });
+  }, [fetchPosts, hasMore, loading, nextPage, pagination?.per_page]);
+
+  const observerRef = useInfiniteScroll(handleLoadMore, hasMore, loading);
 
   return (
     <div className="flex flex-col">

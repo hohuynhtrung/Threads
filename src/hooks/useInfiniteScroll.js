@@ -1,33 +1,30 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-export const useInfiniteScroll = (callback, hasMore, loading, scrollRef) => {
+export const useInfiniteScroll = (
+  callback,
+  hasMore,
+  loading,
+  scrollRootRef = null,
+) => {
+  const sentinelRef = useRef(null);
+
   useEffect(() => {
-    const scrollElement = scrollRef?.current;
+    const sentinel = sentinelRef.current;
+    if (!sentinel || !hasMore || loading) return;
 
-    if (!scrollElement) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) callback();
+      },
+      {
+        root: scrollRootRef?.current ?? null,
+        rootMargin: "0px 0px 200px 0px",
+      },
+    );
 
-    const handleScroll = () => {
-      const { scrollTop, clientHeight, scrollHeight } = scrollElement;
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [callback, hasMore, loading, scrollRootRef]);
 
-      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 200;
-
-      if (isNearBottom && hasMore && !loading) {
-        callback();
-      }
-    };
-
-    const handleWheel = (event) => {
-      if (!scrollElement.contains(event.target)) {
-        scrollElement.scrollTop += event.deltaY;
-      }
-    };
-
-    scrollElement.addEventListener("scroll", handleScroll);
-    window.addEventListener("wheel", handleWheel, { passive: true });
-
-    return () => {
-      scrollElement.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("wheel", handleWheel);
-    };
-  }, [callback, hasMore, loading, scrollRef]);
+  return sentinelRef;
 };
