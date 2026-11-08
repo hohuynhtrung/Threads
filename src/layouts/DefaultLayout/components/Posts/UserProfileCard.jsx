@@ -1,14 +1,16 @@
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux"; // 🔑 Import useSelector
+import { useSelector } from "react-redux";
 import Images from "@/assets/images";
+import { useFetchFollowers } from "@/features/follow/hook";
 
-function UserProfileHoverCard({ user, children }) {
+function UserProfileCard({ user, children }) {
   const navigate = useNavigate();
-
-  // 🔑 Lấy thông tin user đang đăng nhập từ Redux store
   const currentUser = useSelector((state) => state.auth?.currentUser);
 
-  // Kiểm tra xem user trong card có phải là chính mình không
+  const userId = user?.id;
+
+  const { followersCount = 0 } = useFetchFollowers(userId);
+
   const isSelf =
     currentUser?.id && user?.id && String(currentUser.id) === String(user.id);
 
@@ -47,11 +49,15 @@ function UserProfileHoverCard({ user, children }) {
         </div>
 
         <p className="text-[14px] text-black dark:text-[#e8eaeb] mt-3 line-clamp-3">
-          {user?.bio || "Không có tiểu sử"}
+          {user?.bio}
         </p>
 
+        {/* Hiển thị followersCount an toàn với fallback 0 */}
         <div className="text-[14px] text-gray-500 dark:text-[#8e8e8e] mt-3">
-          <span>{user?.followers_count || 0} followers</span>
+          <span>
+            {followersCount ?? 0}{" "}
+            {Number(followersCount) > 1 ? "followers" : "follower"}
+          </span>
         </div>
 
         {!isSelf && (
@@ -82,4 +88,4 @@ function UserProfileHoverCard({ user, children }) {
   );
 }
 
-export default UserProfileHoverCard;
+export default UserProfileCard;

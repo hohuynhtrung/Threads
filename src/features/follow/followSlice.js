@@ -7,10 +7,10 @@ import {
 } from "@/services/follow/followService";
 
 const initialState = {
-  followers: [],
-  followersCount: 0,
-  followings: [],
-  followingCount: 0,
+  followersMap: {},
+  followersCountMap: {},
+  followingsMap: {},
+  followingsCountMap: {},
   followingMap: {},
   loading: false,
   error: null,
@@ -34,9 +34,12 @@ export const followSilce = createSlice({
       })
       .addCase(getFollowers.fulfilled, (state, action) => {
         state.loading = false;
-        state.followers = action.payload.data || [];
-        state.followersCount =
-          action.payload.pagination?.total ?? state.followersCount;
+        const userId = action.meta.arg;
+        const followers = action.payload.data || [];
+        const total = action.payload.pagination?.total ?? followers.length;
+
+        state.followersMap[userId] = followers;
+        state.followersCountMap[userId] = total;
       })
       .addCase(getFollowers.rejected, (state, action) => {
         state.loading = false;
@@ -49,9 +52,12 @@ export const followSilce = createSlice({
       })
       .addCase(getFollowings.fulfilled, (state, action) => {
         state.loading = false;
-        state.followings = action.payload.data || [];
-        state.followingsCount =
-          action.payload.pagination?.total ?? state.followingsCount;
+        const userId = action.meta.arg;
+        const followings = action.payload.data || [];
+        const total = action.payload.pagination?.total ?? followings.length;
+
+        state.followingsMap[userId] = followings;
+        state.followingsCountMap[userId] = total;
       })
       .addCase(getFollowings.rejected, (state, action) => {
         state.loading = false;
@@ -62,7 +68,9 @@ export const followSilce = createSlice({
       .addCase(followUser.pending, (state, action) => {
         const userId = action.meta.arg;
         state.followingMap[userId] = true;
-        state.followersCount += 1;
+        if (state.followersCountMap[userId] !== undefined) {
+          state.followersCountMap[userId] += 1;
+        }
         state.followError = null;
       })
       .addCase(followUser.fulfilled, (state) => {
@@ -71,7 +79,12 @@ export const followSilce = createSlice({
       .addCase(followUser.rejected, (state, action) => {
         const userId = action.meta.arg;
         state.followingMap[userId] = false;
-        state.followersCount = Math.max(0, state.followersCount - 1);
+        if (state.followersCountMap[userId] !== undefined) {
+          state.followersCountMap[userId] = Math.max(
+            0,
+            state.followersCountMap[userId] - 1,
+          );
+        }
         state.followError = action.payload?.message || "Follow failed";
       })
 
@@ -79,7 +92,12 @@ export const followSilce = createSlice({
       .addCase(unfollowUser.pending, (state, action) => {
         const userId = action.meta.arg;
         state.followingMap[userId] = false;
-        state.followersCount = Math.max(0, state.followersCount - 1);
+        if (state.followersCountMap[userId] !== undefined) {
+          state.followersCountMap[userId] = Math.max(
+            0,
+            state.followersCountMap[userId] - 1,
+          );
+        }
         state.followError = null;
       })
       .addCase(unfollowUser.fulfilled, (state) => {
@@ -88,7 +106,9 @@ export const followSilce = createSlice({
       .addCase(unfollowUser.rejected, (state, action) => {
         const userId = action.meta.arg;
         state.followingMap[userId] = true;
-        state.followersCount += 1;
+        if (state.followersCountMap[userId] !== undefined) {
+          state.followersCountMap[userId] += 1;
+        }
         state.followError = action.payload?.message || "Unfollow failed";
       });
   },

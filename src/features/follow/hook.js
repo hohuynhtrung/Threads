@@ -10,7 +10,11 @@ import { setFollowStatus } from "@/features/follow/followSlice";
 
 export const useFetchFollowers = (userId) => {
   const dispatch = useDispatch();
-  const { followersCount, loading } = useSelector((state) => state.follow);
+
+  const followersCount = useSelector(
+    (state) => state.follow.followersCountMap?.[userId] ?? 0,
+  );
+  const loading = useSelector((state) => state.follow.loading);
 
   useEffect(() => {
     if (userId) {

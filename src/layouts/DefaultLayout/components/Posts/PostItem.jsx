@@ -12,7 +12,7 @@ import PostMedia from "@/layouts/DefaultLayout/components/Posts/PostMedia";
 import Images from "@/assets/images";
 
 import QuotedPostItem from "@/layouts/DefaultLayout/components/Posts/QuotePostItem";
-import UserProfileHoverCard from "@/layouts/DefaultLayout/components/Posts/UserProfileCard";
+import UserProfileCard from "@/layouts/DefaultLayout/components/Posts/UserProfileCard";
 
 function PostItem({
   post,
@@ -114,7 +114,7 @@ function PostItem({
 
         <div className="w-full min-w-0">
           <div className="flex justify-between items-center">
-            <UserProfileHoverCard user={post?.user}>
+            <UserProfileCard user={post?.user}>
               <button
                 type="button"
                 onClick={handleUserProfile}
@@ -125,7 +125,7 @@ function PostItem({
                   {formatTimeAgo(post?.created_at)}
                 </span>
               </button>
-            </UserProfileHoverCard>
+            </UserProfileCard>
 
             <MorePostMenu
               post={post}
