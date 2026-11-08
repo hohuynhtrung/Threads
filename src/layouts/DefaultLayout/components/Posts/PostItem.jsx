@@ -12,6 +12,7 @@ import PostMedia from "@/layouts/DefaultLayout/components/Posts/PostMedia";
 import Images from "@/assets/images";
 
 import QuotedPostItem from "@/layouts/DefaultLayout/components/Posts/QuotePostItem";
+import UserProfileHoverCard from "@/layouts/DefaultLayout/components/Posts/UserProfileCard";
 
 function PostItem({
   post,
@@ -113,16 +114,18 @@ function PostItem({
 
         <div className="w-full min-w-0">
           <div className="flex justify-between items-center">
-            <button
-              type="button"
-              onClick={handleUserProfile}
-              className={`font-semibold text-black dark:text-[#e8eaeb] ${nameSize} leading-tight text-left cursor-pointer hover:underline`}
-            >
-              {post?.user?.name}
-              <span className="text-[14px] font-normal text-gray-400 dark:text-[#cccccc] ml-2">
-                {formatTimeAgo(post?.created_at)}
-              </span>
-            </button>
+            <UserProfileHoverCard user={post?.user}>
+              <button
+                type="button"
+                onClick={handleUserProfile}
+                className={`font-semibold text-black dark:text-[#e8eaeb] ${nameSize} leading-tight text-left cursor-pointer hover:underline`}
+              >
+                {post?.user?.name}
+                <span className="text-[14px] font-normal text-gray-400 dark:text-[#cccccc] ml-2">
+                  {formatTimeAgo(post?.created_at)}
+                </span>
+              </button>
+            </UserProfileHoverCard>
 
             <MorePostMenu
               post={post}
